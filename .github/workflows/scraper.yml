@@ -1,0 +1,130 @@
+name: Tender-Tracker SAGA - Scraper
+
+on:
+  schedule:
+    # 5h17 UTC chaque jour : GitHub retarde surtout les lancements programmés à l'heure pile
+    - cron: '17 5 * * *'
+  workflow_dispatch: # Lancement manuel depuis GitHub ou le bouton « Lancer l'analyse » du dashboard
+  repository_dispatch:
+    types: [run-scraper]  # Permet de déclencher via webhook
+
+permissions:
+  contents: write
+
+# Un seul run à la fois : un run déclenché pendant un autre attend au lieu de l'annuler
+concurrency:
+  group: scraper
+  cancel-in-progress: false
+
+jobs:
+  scrape-tenders:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scripts/requirements*.txt
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements-dev.txt
+
+      # Tests en échec : pas de scraping ni de commit
+      - name: Run Tests
+        run: python -m pytest scripts -q -p no:asyncio
+
+      - name: Setup Chrome for Selenium
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+
+      # Copie de début de run : base de la réconciliation si le dashboard commite pendant le run
+      - name: Save Initial Data
+        run: |
+          if [ -f docs/data.json ]; then
+            cp docs/data.json "$RUNNER_TEMP/data.base.json"
+          else
+            echo '{}' > "$RUNNER_TEMP/data.base.json"
+          fi
+
+      - name: Run Scraper
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          NOTIFICATION_ENABLED: ${{ secrets.NOTIFICATION_ENABLED }}
+          # Code d'accès du dashboard : clé de chiffrement de docs/data.json
+          DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
+        run: |
+          python scripts/scraper.py
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Commit quotidien (last_updated sert de preuve de vie au dashboard), seulement si le fichier a changé.
+      # Push refusé : on reporte les suppressions faites depuis le dashboard, on repart de origin/main et on réessaie.
+      - name: Commit & Push Changes
+        env:
+          COMMIT_MESSAGE: "✅ Automated Tender Update - Run #${{ github.run_number }}"
+          DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
+        run: |
+          set -euo pipefail
+          DATA=docs/data.json
+          BASE="$RUNNER_TEMP/data.base.json"
+          OURS="$RUNNER_TEMP/data.ours.json"
+          REMOTE="$RUNNER_TEMP/data.remote.json"
+          cp "$DATA" "$OURS"
+          for attempt in 1 2 3 4 5; do
+            git add "$DATA"
+            if git diff --cached --quiet; then
+              echo "✅ No changes to commit"
+              exit 0
+            fi
+            git commit -m "$COMMIT_MESSAGE"
+            if git push origin HEAD:main; then
+              echo "✅ Changes pushed successfully"
+              exit 0
+            fi
+            echo "⚠️ Push refusé (tentative $attempt/5) : réconciliation avec origin/main"
+            sleep $((attempt * 5))
+            git fetch origin main
+            # Fichier absent sur le distant : rien à reporter
+            git show "origin/main:$DATA" > "$REMOTE" 2>/dev/null || echo '{}' > "$REMOTE"
+            python scripts/reconcile.py "$BASE" "$OURS" "$REMOTE"
+            git reset --hard origin/main
+            cp "$OURS" "$DATA"
+          done
+          echo "❌ Push impossible après 5 tentatives"
+          exit 1
+
+      - name: Notify Failure
+        if: failure()
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          echo "❌ Scraper failed - Run: ${{ github.run_id }}"
+          echo "📋 Logs: $RUN_URL"
+          # Envoyée même si les notifications d'avis sont désactivées ; sans webhook, rien à faire
+          if [ -z "${WEBHOOK_URL:-}" ]; then
+            echo "Webhook non configuré : pas d'alerte envoyée"
+            exit 0
+          fi
+          content=$(printf '**❌ ÉCHEC DU SCRAPER TENDER-TRACKER** (run #%s)\nLogs : %s' "$RUN_NUMBER" "$RUN_URL")
+          payload=$(jq -n --arg content "$content" '{content: $content}')
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 \
+            -H 'Content-Type: application/json' -d "$payload" "$WEBHOOK_URL") || code=erreur
+          echo "Webhook : $code"

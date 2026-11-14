@@ -1,0 +1,377 @@
+[
+  {
+    "region": "Caraïbes",
+    "country": "Bahamas",
+    "url": "https://www.bahamas.gov.bs/index.php/tender-and-tender-notices"
+  },
+  {
+    "region": "Caraïbes",
+    "country": "British Virgin Islands",
+    "url": "https://gov.vg/tenders"
+  },
+  {
+    "region": "Caraïbes",
+    "country": "Cayman Islands",
+    "url": "https://cayman.bonfirehub.com/portal/?tab=openOpportunities"
+  },
+  {
+    "region": "Caraïbes",
+    "country": "Panama",
+    "url": "https://www.panamacompra.gob.pa/Inicio/"
+  },
+  {
+    "region": "Caraïbes",
+    "country": "Bermuda",
+    "url": "https://www.gov.bm/procurement-notices"
+  },
+  {
+    "region": "Caraïbes",
+    "country": "St Kitts and Nevis",
+    "url": "https://www.mof.gov.kn/tender-advertisement/"
+  },
+  {
+    "region": "Caraïbes",
+    "country": "Dominican Republic",
+    "url": "https://comunidad.comprasdominicana.gob.do/Public/Tendering/ContractNoticeManagement/Index"
+  },
+  {
+    "region": "Europe",
+    "country": "Jersey",
+    "url": "https://www.channelislandtenders.com/"
+  },
+  {
+    "region": "Europe",
+    "country": "Gibraltar",
+    "url": "https://www.gibraltar.gov.gi/press/tender-notices?np=1"
+  },
+  {
+    "region": "Europe",
+    "country": "Liechtenstein",
+    "url": "https://www.liechtenstein.li/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Côte d'Ivoire",
+    "url": "https://www.marchespublics.ci/appel_offre"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Sénégal",
+    "url": "https://www.achatspublics.sn/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Bénin",
+    "url": "https://marches-publics.bj/appels-doffres"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Burkina Faso",
+    "url": "https://www.dgcmef.gov.bf/fr/appels-d-offre"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Mali",
+    "url": "https://dgmp.gouv.ml/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Niger",
+    "url": "https://www.marchespublics.ne/appels-offres"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Togo",
+    "url": "https://marchespublicstogo.com/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Guinée",
+    "url": "https://telemo.gov.gn/eb/bav/selectListAdvertisingListForGU.do?menuId=EB01020100&leftTopFlag=l"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Guinée (DGCMP)",
+    "url": "https://dgcmp.gov.gn/appels-doffres/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Mauritanie",
+    "url": "https://marchespublics.gov.mr/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Gabon",
+    "url": "https://lejmp.com/avis-dappel-a-la-concurrence/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Tchad",
+    "url": "https://armp-tchad.com/consultation-des-appels-d-offres"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "RDC",
+    "url": "https://marche.armp-rdc.cd/categorie-poste/avis-dappels-doffre"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Congo-Brazzaville",
+    "url": "https://armp.cg/services-portal.php"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Djibouti",
+    "url": "https://marchespublics.gouv.dj/"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Cameroun",
+    "url": "https://marchespublics.cm/index.do"
+  },
+  {
+    "region": "Afrique Francophone",
+    "country": "Guinée (ARMP)",
+    "url": "https://armpguinee.org/appels-doffres/"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Kenya",
+    "url": "https://www.treasury.go.ke/treasury-tenders?page=0"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Tanzania",
+    "url": "https://nest.go.tz/"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Uganda",
+    "url": "https://egpuganda.go.ug/bid-notices"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Rwanda",
+    "url": "https://www.umucyo.gov.rw/eb/bav/selectListAdvertisingListForGU.do?menuId=EB01020100&leftTopFlag=l"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Ethiopia",
+    "url": "https://production.egp.gov.et/egp/bids/all"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "South Africa",
+    "url": "https://www.etenders.gov.za/"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Nigeria",
+    "url": "https://etenders.com.ng/"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Ghana",
+    "url": "https://www.ghaneps.gov.gh/epps/quickSearchAction.do?searchSelect=1"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Zambia",
+    "url": "https://eprocure.zppa.org.zm/epps/common/viewOpenedTenders.do"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Botswana",
+    "url": "https://etender.co.bw/"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Malawi",
+    "url": "https://www.ppda.mw/tenders"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Sierra Leone",
+    "url": "https://nppa.gov.sl/bid/"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Liberia",
+    "url": "https://eprocurement.ppcc.gov.lr/epps/home.do"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Lesotho",
+    "url": "https://www.gov.ls/documents/tenders/"
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Zimbabwe",
+    "url": "https://egp.praz.org.zw/egp-SW5kZXhlcy9pbmRleA=="
+  },
+  {
+    "region": "Afrique Anglophone",
+    "country": "Gambia",
+    "url": "https://www.tenders.gm/"
+  },
+  {
+    "region": "Afrique Lusophone",
+    "country": "Mozambique",
+    "url": "https://www.ufsa.gov.mz/concursos.php"
+  },
+  {
+    "region": "Afrique Lusophone",
+    "country": "Angola",
+    "url": "https://compraspublicas.minfin.gov.ao/ComprasPublicas/"
+  },
+  {
+    "region": "Afrique Lusophone",
+    "country": "Cap Vert",
+    "url": "https://www.mf.gov.cv/web/ecompras/concursos-abertos"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Maroc",
+    "url": "https://www.marchespublics.gov.ma/pmmp/"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Algérie",
+    "url": "https://marches-publics.gov.dz/fr"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Tunisie",
+    "url": "https://www.marchespublics.gov.tn/fr"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Arabie Saoudite",
+    "url": "https://tenders.etimad.sa/Tender/AllTendersForVisitor?PageNumber=1"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Oman",
+    "url": "https://etendering.tenderboard.gov.om/product/publicDash"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Égypte",
+    "url": "https://eps-gags.gov.eg/pt/main.do"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "UAE",
+    "url": "https://procurement.gov.ae/page.aspx/en/buy/homepage"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Qatar",
+    "url": "https://www.ashghal.gov.qa/en/Tenders/pages/ERPTenderDetailes.aspx?Status=Open"
+  },
+  {
+    "region": "Maghreb & Moyen-Orient",
+    "country": "Bahreïn",
+    "url": "https://www.tenderboard.gov.bh/"
+  },
+  {
+    "region": "Océan Indien",
+    "country": "Île Maurice",
+    "url": "https://eproc.publicprocurement.govmu.org/login"
+  },
+  {
+    "region": "Océan Indien",
+    "country": "Seychelles",
+    "url": "https://www.ntb.sc/"
+  },
+  {
+    "region": "Océan Indien",
+    "country": "Madagascar",
+    "url": "http://www.armp.mg/marches_publics/"
+  },
+  {
+    "region": "Océan Indien",
+    "country": "Comores",
+    "url": "https://dncmp.km/tenders"
+  },
+  {
+    "region": "Asie",
+    "country": "Thaïlande",
+    "url": "https://www.gprocurement.go.th/new_index.html"
+  },
+  {
+    "region": "Asie",
+    "country": "Indonésie",
+    "url": "https://inaproc.id/en"
+  },
+  {
+    "region": "Asie",
+    "country": "Singapour",
+    "url": "https://www.gebiz.gov.sg/ptn/opportunity/opportunityDetails.xhtml"
+  },
+  {
+    "region": "Bailleurs IGO",
+    "country": "World Bank",
+    "url": "https://projects.worldbank.org/en/projects-operations/procurement?srce=both"
+  },
+  {
+    "region": "Bailleurs IGO",
+    "country": "AfDB",
+    "url": "https://www.afdb.org/en/projects-and-operations/procurement"
+  },
+  {
+    "region": "Bailleurs IGO",
+    "country": "ADB",
+    "url": "https://www.adb.org/projects/tenders"
+  },
+  {
+    "region": "Bailleurs IGO",
+    "country": "Development Aid",
+    "url": "https://www.developmentaid.org/"
+  },
+  {
+    "region": "Bailleurs bilatéraux",
+    "country": "GIZ - Germany",
+    "url": "https://ausschreibungen.giz.de/Satellite/company/welcome.do"
+  },
+  {
+    "region": "Bailleurs bilatéraux",
+    "country": "AFD - France",
+    "url": "https://afd.dgmarket.com/tenders/brandedNoticeList.do"
+  },
+  {
+    "region": "Bailleurs bilatéraux",
+    "country": "Norad - Norway",
+    "url": "https://www.norad.no/en/for-partners/guides-and-tools/calls-for-proposals2/"
+  },
+  {
+    "region": "Bailleurs bilatéraux",
+    "country": "Danida - Denmark",
+    "url": "https://um.dk/en/about-us/procurement/contracts/"
+  },
+  {
+    "region": "Bailleurs bilatéraux",
+    "country": "SIDA - Sweden",
+    "url": "https://sida.se/en/about-sida/procurements-at-sida"
+  },
+  {
+    "region": "Bailleurs bilatéraux",
+    "country": "JICA - Japan",
+    "url": "https://www.jica.go.jp/english/activities/schemes/grant_aid/procurement.html"
+  },
+  {
+    "region": "Agrégateurs",
+    "country": "Global Tenders",
+    "url": "https://www.globaltenders.com/"
+  },
+  {
+    "region": "Agrégateurs",
+    "country": "Tender Soko",
+    "url": "https://tendersoko.com/tenders"
+  },
+  {
+    "region": "Agrégateurs",
+    "country": "Africa Tenders",
+    "url": "https://africatenders.net/"
+  }
+]

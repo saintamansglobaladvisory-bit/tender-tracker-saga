@@ -1,0 +1,119 @@
+{
+  "strong": {
+    "fr": [
+      "mobilisation des ressources internes",
+      "mobilisation des ressources intérieures",
+      "mobilisation des ressources domestiques",
+      "mobilisation des recettes",
+      "réforme fiscale",
+      "gestion des finances publiques",
+      "dette souveraine",
+      "restructuration de dette",
+      "restructuration de la dette",
+      "collecte des impôts",
+      "ressources fiscales",
+      "administration fiscale",
+      "modernisation fiscale",
+      "expertise fiscale",
+      "gestion des ressources publiques",
+      "pilier 1 ocde",
+      "taxe sur les services numériques",
+      "droits d'imposition",
+      "règle de lien économique"
+    ],
+    "en": [
+      "domestic resource mobilization",
+      "domestic resource mobilisation",
+      "tax reform",
+      "fiscal policy",
+      "public financial management",
+      "sovereign debt",
+      "debt restructuring",
+      "tax administration",
+      "revenue mobilization",
+      "revenue mobilisation",
+      "tax expertise",
+      "public resource management",
+      "beps",
+      "customs modernization",
+      "customs modernisation",
+      "tax modernisation",
+      "tax modernization",
+      "oecd pillar 1",
+      "digital services tax",
+      "taxing rights",
+      "profit reallocation",
+      "nexus rules"
+    ],
+    "es": [
+      "movilización de recursos internos",
+      "reforma fiscal",
+      "gestión de finanzas públicas",
+      "deuda soberana",
+      "reestructuración de deuda",
+      "administración tributaria",
+      "modernización tributaria",
+      "experticia fiscal",
+      "pilar 1 ocde",
+      "impuesto sobre los servicios digitales",
+      "derechos de imposición",
+      "reglas de nexo",
+      "reasignación de beneficios"
+    ],
+    "pt": [
+      "mobilização de recursos internos",
+      "gestão das finanças públicas",
+      "dívida soberana",
+      "reestruturação da dívida",
+      "administração tributária",
+      "modernização tributária",
+      "imposto sobre os serviços digitais",
+      "direitos de tributação",
+      "regras de nexo",
+      "realocação de lucros"
+    ],
+    "ar": [
+      "تعبئة الموارد",
+      "الإصلاح الضريبي",
+      "إدارة المالية العامة",
+      "الإيرادات الضريبية",
+      "إدارة الضرائب",
+      "تحديث النظام الضريبي",
+      "خبرة ضريبية",
+      "ضريبة الخدمات الرقمية",
+      "حقوق فرض الضرائب",
+      "إعادة تخصيص الأرباح"
+    ]
+  },
+  "weak": {
+    "fr": [
+      "fiscalité",
+      "finances publiques",
+      "budgétisation",
+      "mobilisation des ressources",
+      "mobilisation de ressources",
+      "impôts"
+    ],
+    "en": [
+      "revenue authority",
+      "drm",
+      "pfm"
+    ],
+    "es": [
+      "fiscalidad",
+      "movilización de recursos",
+      "gestión de recursos públicos"
+    ],
+    "pt": [
+      "fiscalidade",
+      "mobilização de recursos",
+      "gestão de recursos públicos"
+    ],
+    "ar": [
+      "الضرائب",
+      "الدين العام",
+      "الموارد المحلية",
+      "إدارة الموارد العامة"
+    ]
+  }
+}

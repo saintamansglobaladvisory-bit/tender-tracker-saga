@@ -1,0 +1,2909 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Tender Tracker SAGA</title>
+    <link rel="icon" href="./flags/ICONESAGA.png?v=2" type="image/png" sizes="any">
+    <link rel="icon" href="./flags/ICONESAGA.png?v=2" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #1a1a1a;
+            font-size: 15.4px;
+            line-height: 1.5;
+            zoom: 1.1;
+        }
+
+        /* ===== LOGIN SCREEN ===== */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #ffffff;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+            padding: 48px 40px;
+            text-align: center;
+            border: 1px solid #dadce0;
+            border-radius: 2px;
+        }
+
+        .login-title {
+            font-size: 26px;
+            font-weight: 600;
+            color: #202124;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+        }
+
+        .login-subtitle {
+            font-size: 13.2px;
+            color: #80868b;
+            margin-bottom: 32px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-group {
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12.1px;
+            font-weight: 600;
+            color: #202124;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 13.2px 13.2px;
+            font-size: 15.4px;
+            border: 1px solid #dadce0;
+            background-color: #ffffff;
+            color: #202124;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+            border-radius: 2px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #333333;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-button {
+            padding: 13.2px 17.6px;
+            margin-top: 8px;
+            font-size: 15.4px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #333333;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-family: inherit;
+            border-radius: 2px;
+        }
+
+        .login-button:hover {
+            background-color: #000000;
+        }
+
+        .error-message {
+            font-size: 13.2px;
+            color: #d32f2f;
+            text-align: center;
+            display: none;
+            margin-top: 12px;
+        }
+
+        /* ===== MAIN DASHBOARD ===== */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            background-color: #ffffff;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 48px 40px 48px;
+            background-color: #ffffff;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            border-bottom: 2px solid #333333;
+            padding-bottom: 20px;
+            position: relative;
+            min-height: 90px;
+        }
+
+        h1 {
+            font-size: 35.2px;
+            font-weight: 700;
+            color: #0a0a0a;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-saga {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        .scan-info {
+            display: flex;
+            gap: 40px;
+            font-size: 12.1px;
+            color: #5f6368;
+            text-align: right;
+            line-height: 1.6;
+        }
+
+        .scan-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .scan-label {
+            font-weight: 600;
+            display: block;
+            font-size: 11px;
+        }
+
+        .scan-time {
+            display: block;
+            font-size: 13.2px;
+            color: #202124;
+            font-weight: 500;
+        }
+
+        .scan-button {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #1a73e8;
+            border: 1px solid #1a73e8;
+            cursor: pointer;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-family: inherit;
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+
+        .scan-button:hover:not(:disabled) {
+            background-color: #555555;
+        }
+
+        .scan-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* ===== TABS ===== */
+        .tabs-container {
+            display: flex;
+            gap: 24px;
+            margin-top: -8px;
+            margin-bottom: 0px;
+            border-bottom: 1px solid #dadce0;
+            padding-bottom: 8px;
+            align-items: center;
+        }
+
+        .tab-button {
+            padding: 12px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #5f6368;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .tab-button:hover {
+            color: #202124;
+        }
+
+        .tab-button.active {
+            color: #000000;
+            border-bottom-color: #000000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== ALERTES SECTION ===== */
+        .alerts-section {
+            background-color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 0px;
+            padding: 16px;
+            margin-bottom: 32px;
+        }
+
+        .alerts-title {
+            font-size: 13.2px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #202124;
+            margin-bottom: 12px;
+            padding-left: 8px;
+            border-left: 3px solid #1f2937;
+        }
+
+        .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .alert-item {
+            padding: 13.2px;
+            background-color: #ffffff;
+            border: 1px solid #e8eaed;
+            border-left: 3px solid #1f2937;
+            border-radius: 2px;
+            font-size: 14.3px;
+            transition: background-color 0.15s ease;
+        }
+
+        .alert-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .alert-country {
+            font-weight: 600;
+            color: #202124;
+            display: block;
+            margin-bottom: 3px;
+            font-size: 14.3px;
+        }
+
+        .alert-title {
+            font-size: 13.2px;
+            color: #5f6368;
+            margin-bottom: 4px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .alert-keywords {
+            font-size: 12.1px;
+            color: #80868b;
+            display: block;
+        }
+
+        .alerts-empty {
+            font-size: 14.3px;
+            color: #80868b;
+            padding: 8px 12px;
+        }
+
+        /* ===== KEYWORDS SECTION ===== */
+        .keywords-section {
+            background-color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 0px;
+            padding: 20px;
+        }
+
+        .keywords-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .keywords-category {
+            background-color: #ffffff;
+            border: 1px solid #e8eaed;
+            border-radius: 2px;
+            padding: 16px;
+        }
+
+        .keywords-category-title {
+            font-size: 12.1px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #202124;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e8eaed;
+        }
+
+        .keywords-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* ===== BLOC RÉSUMÉ DES OFFRES ===== */
+        .alerts-summary-block {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border: 2px solid #ffb300;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.2);
+        }
+
+        .alerts-summary-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #cc8800;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #ffb300;
+            padding-bottom: 10px;
+        }
+
+        .alerts-summary-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .alert-item {
+            background: white;
+            border-left: 4px solid #ff9800;
+            padding: 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-country {
+            font-weight: 700;
+            color: #0a0a0a;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .alert-keywords {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .alert-keywords span {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+
+        .keyword-item {
+            font-size: 13.2px;
+            color: #000000 !important;
+            padding: 0px !important;
+            background-color: transparent !important;
+            border-radius: 0px !important;
+            border-left: none !important;
+            padding-left: 0px !important;
+        }
+
+        /* ===== TABLE ===== */
+        .regions-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .region-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border: 2px solid #333333;
+            border-radius: 0px;
+            overflow: hidden;
+        }
+
+        .region-title {
+            font-size: 12.1px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            background-color: #000000;
+            padding: 13.2px 17.6px;
+            border-bottom: 2px solid #000000;
+            border-left: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            table-layout: fixed;
+        }
+
+        thead th {
+            font-size: 12.1px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.4px !important;
+            color: #ffffff !important;
+            padding: 13.2px 16px !important;
+            background-color: #333333 !important;
+            border-bottom: 2px solid #000000 !important;
+            box-sizing: border-box !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            width: 100% !important;
+            display: table-cell !important;
+        }
+
+        thead th:nth-child(4) {
+            padding: 13.2px 16px 13.2px 120px !important;
+            text-align: left !important;
+        }
+
+        tbody tr {
+            border-bottom: 2px solid #000000;
+            height: 80px;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #eeeeee;
+        }
+
+        tbody tr.unavailable {
+            background-color: #f8f8f8;
+            opacity: 0.8;
+        }
+
+        tbody td {
+            padding: 0 10px;
+            font-size: 14.3px;
+            line-height: 1.5;
+            color: #000000;
+            border-right: 2px solid #000000;
+        }
+
+        tbody td:last-child {
+            border-right: none;
+        }
+
+        .country-cell {
+            font-weight: 700;
+            color: #0a0a0a;
+            padding: 0 !important;
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            width: auto;
+        }
+
+        .country-flag-container {
+            width: 95px;
+            min-width: 95px;
+            max-width: 95px;
+            padding: 10px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            border-right: none;
+            flex-shrink: 0;
+        }
+
+        .country-flag {
+            width: 80px !important;
+            height: 60px !important;
+            object-fit: contain;
+            object-position: center;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .country-name {
+            width: 60%;
+            padding: 12px 10px;
+            display: flex;
+            align-items: center;
+            font-size: 14.3px;
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        .url-cell {
+            color: #000000;
+            font-size: 13.2px;
+            word-break: break-all;
+            overflow: hidden;
+            width: auto;
+        }
+
+        .url-cell a {
+            color: #000000;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+            padding: 2px 0;
+            display: inline-block;
+        }
+
+        .url-cell a:hover {
+            color: #1a1a1a;
+            text-decoration: underline;
+        }
+
+        .url-unavailable {
+            color: #80868b;
+            font-size: 13.2px;
+        }
+
+        .status-cell {
+            text-align: center;
+        }
+
+        .status-cell .status-alert {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 15.4px;
+            display: inline-block;
+            background-color: #1b5e20;
+            padding: 6px 10px;
+            border-radius: 2px;
+        }
+
+        .status-cell .status-inactive {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 15.4px;
+            display: inline-block;
+            background-color: #8b1c1c;
+            padding: 6px 10px;
+            border-radius: 2px;
+        }
+
+        .status-cell .status-empty {
+            color: #333333;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .status-cell .source-state {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 3px 6px;
+            border: 1px solid #9e9e9e;
+            border-radius: 2px;
+            color: #555555;
+            background-color: #f2f2f2;
+            font-size: 11.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: help;
+        }
+
+        .status-cell .source-state.persistent {
+            border-color: #333333;
+            color: #ffffff;
+            background-color: #555555;
+        }
+
+        .sources-health {
+            margin: 0 0 20px;
+            font-size: 13.2px;
+            color: #555555;
+        }
+
+        .keywords-cell {
+            padding: 12px 10px;
+            font-size: 12.1px;
+            text-align: left;
+        }
+
+        .keywords-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px 5px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .keyword-badge {
+            background: transparent;
+            border: none;
+            border-radius: 0px;
+            padding: 0px;
+            font-size: 12.1px;
+            font-weight: 400;
+            color: #000000;
+            white-space: nowrap;
+            display: inline;
+            box-shadow: none;
+            text-shadow: none;
+            text-decoration: none;
+            margin: 0px;
+            outline: none;
+        }
+
+        .keyword-badge:after {
+            content: ', ';
+        }
+
+        .keyword-badge:last-child:after {
+            content: '';
+        }
+
+        .keywords-empty {
+            color: #333333;
+            font-weight: 700;
+            font-size: 20px;
+            margin-left: 140px;
+        }
+
+        .reset-cell {
+            text-align: center;
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
+        }
+
+        .reset-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #dadce0;
+            border-radius: 2px;
+            padding: 6px 10px;
+            font-size: 14px;
+            color: #d32f2f;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .reset-btn:hover {
+            background-color: #ffebee;
+            border-color: #d32f2f;
+            color: #b71c1c;
+        }
+
+        .reset-empty {
+            color: #dadce0;
+        }
+
+        .status-clickable {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+
+        .status-clickable:hover {
+            background-color: rgba(31, 41, 55, 0.1);
+            text-decoration: underline;
+        }
+
+        /* ===== TITLE STYLING ===== */
+        .title-tender {
+            color: #000000;
+        }
+
+        .title-saga {
+            color: #999999;
+        }
+
+        /* ===== MODAL DÉTAILS ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 2px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #dadce0;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #dadce0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-title {
+            font-size: 18.2px;
+            font-weight: 600;
+            color: #202124;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #5f6368;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #202124;
+        }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .detail-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-label {
+            font-size: 12.1px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #5f6368;
+        }
+
+        .detail-value {
+            font-size: 14.3px;
+            color: #202124;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #dadce0;
+            border-radius: 2px;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .detail-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .detail-tag {
+            background-color: transparent !important;
+            border: none !important;
+            border-radius: 0px !important;
+            padding: 0px !important;
+            font-size: 12.1px;
+            font-weight: 400;
+            color: #000000;
+            display: inline;
+        }
+
+        .detail-tag:after {
+            content: ', ';
+        }
+
+        .detail-tag:last-of-type:after {
+            content: '';
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            padding: 0 24px 24px 24px;
+            border-top: 1px solid #dadce0;
+            margin-top: 16px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 13.2px;
+            font-weight: 600;
+            border: 1px solid #cccccc;
+            background-color: #ffffff;
+            color: #333333;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: underline;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-btn:hover {
+            background-color: #eeeeee;
+            border-color: #333333;
+        }
+
+        .modal-btn-primary {
+            background-color: #333333;
+            color: #ffffff;
+            border-color: #333333;
+            text-decoration: none;
+        }
+
+        .modal-btn-primary:hover {
+            background-color: #000000;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #dadce0;
+            text-align: center;
+            font-size: 12.1px;
+            color: #80868b;
+        }
+
+        .footer a {
+            color: #333333;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .footer a:hover {
+            color: #000000;
+            text-decoration: underline;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        .section-note {
+            font-size: 13.2px;
+            color: #5f6368;
+            line-height: 1.5;
+        }
+
+        .region-section > .section-note {
+            padding: 12px 17.6px;
+            border-bottom: 1px solid #e8eaed;
+        }
+
+        /* ===== LANCEMENT DE L'ANALYSE ===== */
+        .scan-panel {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 28px;
+            padding: 18px 20px;
+            border: 2px solid #333333;
+        }
+
+        .scan-launch {
+            flex: 0 0 auto;
+            padding: 18px 34px;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: #ffffff;
+            background-color: #000000;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .scan-launch:hover:not(:disabled) {
+            background-color: #333333;
+        }
+
+        .scan-launch:disabled {
+            background-color: #9e9e9e;
+            cursor: progress;
+        }
+
+        .scan-launch:focus-visible,
+        .primary-button:focus-visible,
+        .secondary-button:focus-visible,
+        .kw-remove:focus-visible {
+            outline: 3px solid #1a73e8;
+            outline-offset: 2px;
+        }
+
+        .scan-progress {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .scan-headline {
+            font-size: 15.4px;
+            font-weight: 600;
+            color: #202124;
+        }
+
+        .scan-detail {
+            font-size: 13.2px;
+            color: #5f6368;
+        }
+
+        .scan-detail a {
+            color: #000000;
+        }
+
+        .scan-steps {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 18px;
+        }
+
+        .scan-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13.2px;
+            color: #9e9e9e;
+        }
+
+        .scan-step-mark {
+            width: 12px;
+            height: 12px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            flex: 0 0 auto;
+        }
+
+        .scan-step.done {
+            color: #2e7d32;
+        }
+
+        .scan-step.done .scan-step-mark {
+            background-color: currentColor;
+        }
+
+        .scan-step.current {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .scan-step.current .scan-step-mark {
+            border-color: #000000;
+            border-right-color: transparent;
+            animation: scan-spin 0.9s linear infinite;
+        }
+
+        .scan-step.failed {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .scan-step.failed .scan-step-mark {
+            background-color: currentColor;
+        }
+
+        @keyframes scan-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scan-step.current .scan-step-mark {
+                animation: none;
+                border-right-color: #000000;
+            }
+        }
+
+        /* ===== BOUTONS ===== */
+        .primary-button,
+        .secondary-button {
+            padding: 8px 14px;
+            font-family: inherit;
+            font-size: 12.1px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .primary-button {
+            color: #ffffff;
+            background-color: #000000;
+            border: 1px solid #000000;
+        }
+
+        .secondary-button {
+            color: #000000;
+            background-color: #ffffff;
+            border: 1px solid #333333;
+        }
+
+        .primary-button:disabled,
+        .secondary-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .form-message {
+            font-size: 13.2px;
+            min-height: 0;
+        }
+
+        .form-message:empty {
+            display: none;
+        }
+
+        .form-message.error {
+            color: #d32f2f;
+        }
+
+        .form-message.ok {
+            color: #2e7d32;
+        }
+
+        /* ===== À VÉRIFIER MANUELLEMENT ===== */
+        .manual-check {
+            margin-bottom: 30px;
+            border-color: #b26a00;
+        }
+
+        .manual-check .region-title {
+            background-color: #b26a00;
+            border-bottom-color: #b26a00;
+        }
+
+        /* Le décalage de la 4e colonne ne concerne que les tableaux d'offres (colonne mots-clés) */
+        .manual-check thead th:nth-child(4),
+        .sources-table thead th:nth-child(4) {
+            padding: 13.2px 16px !important;
+            text-align: center !important;
+        }
+
+        .manual-check td,
+        .sources-table td {
+            padding: 12px 14px;
+            font-size: 13.2px;
+            vertical-align: middle;
+        }
+
+        .manual-check a {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        /* ===== ONGLET SOURCES ===== */
+        .pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border: 1px solid #9e9e9e;
+            border-radius: 2px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #555555;
+            background-color: #f2f2f2;
+        }
+
+        .pill.ok {
+            border-color: #2e7d32;
+            color: #2e7d32;
+            background-color: #e8f5e9;
+        }
+
+        .pill.broken {
+            border-color: #d32f2f;
+            color: #d32f2f;
+            background-color: #fdecea;
+        }
+
+        .pill.manual {
+            border-color: #b26a00;
+            color: #8a5200;
+            background-color: #fff4e0;
+        }
+
+        .pill.pending {
+            border-color: #1a73e8;
+            color: #1a5bb8;
+            background-color: #e8f0fe;
+            white-space: normal;
+        }
+
+        .pill-note {
+            display: block;
+            margin-top: 4px;
+            font-size: 11.5px;
+            color: #5f6368;
+        }
+
+        .sources-table .url-cell a {
+            overflow-wrap: anywhere;
+        }
+
+        /* ===== ÉDITION DES MOTS-CLÉS ===== */
+        .keywords-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .keywords-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .keywords-pending {
+            font-size: 12.1px;
+            color: #b26a00;
+            font-weight: 600;
+        }
+
+        .kw-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .kw-group-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #5f6368;
+        }
+
+        .kw-group-hint {
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: #80868b;
+        }
+
+        .kw-select {
+            padding: 8px 6px;
+            font-family: inherit;
+            font-size: 13.2px;
+            border: 1px solid #dadce0;
+            border-radius: 2px;
+            background-color: #ffffff;
+        }
+
+        .keywords-toolbar .section-note {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1 1 480px;
+        }
+
+        .keywords-editor {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .keywords-editor .keywords-category {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .keywords-editor .keywords-category-title {
+            margin-bottom: 0;
+        }
+
+        .kw-add {
+            display: flex;
+            gap: 8px;
+        }
+
+        .kw-input {
+            flex: 1;
+            min-width: 0;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: 13.2px;
+            border: 1px solid #dadce0;
+            border-radius: 2px;
+        }
+
+        .kw-input:focus {
+            outline: none;
+            border-color: #333333;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .kw-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .kw-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 4px 3px 9px;
+            font-size: 12.6px;
+            border: 1px solid #dadce0;
+            border-radius: 2px;
+            background-color: #fafafa;
+        }
+
+        .kw-chip.added {
+            border-color: #2e7d32;
+            background-color: #e8f5e9;
+        }
+
+        .kw-remove {
+            width: 20px;
+            height: 20px;
+            font-size: 15px;
+            line-height: 1;
+            color: #5f6368;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .kw-remove:hover {
+            color: #d32f2f;
+        }
+
+        /* ===== FENÊTRE DE MODIFICATION ===== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background-color: rgba(0, 0, 0, 0.45);
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 24px;
+            background-color: #ffffff;
+            border: 2px solid #333333;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .modal-label {
+            font-size: 12.1px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #202124;
+        }
+
+        .modal-input {
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 14px;
+            border: 1px solid #dadce0;
+            border-radius: 2px;
+        }
+
+        .modal-input[readonly] {
+            color: #5f6368;
+            background-color: #f5f5f5;
+        }
+
+        .modal-warning {
+            font-size: 12.6px;
+            color: #8a5200;
+            background-color: #fff4e0;
+            border-left: 3px solid #b26a00;
+            padding: 8px 10px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .scan-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .keywords-editor {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .main-container {
+                padding: 32px 36px;
+            }
+
+            .url-cell {
+                max-width: 500px;
+                font-size: 13.2px;
+            }
+
+            tbody td {
+                padding: 13.2px 15.4px;
+                font-size: 13.2px;
+            }
+
+            .keywords-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 24px 20px;
+            }
+
+            h1 {
+                font-size: 26.4px;
+            }
+
+            .login-box {
+                padding: 36px 28px;
+            }
+
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .last-update {
+                text-align: left;
+                margin-top: 8px;
+            }
+
+            tbody td {
+                padding: 11px 13.2px;
+                font-size: 12.1px;
+            }
+
+            .url-cell {
+                max-width: 300px;
+                font-size: 12.1px;
+            }
+
+            .country-cell {
+                width: 120px;
+                min-width: 120px;
+            }
+
+            .status-cell {
+                width: 120px;
+                min-width: 120px;
+                font-size: 12.1px;
+            }
+
+            .regions-wrapper {
+                gap: 28px;
+            }
+
+            .alert-item {
+                padding: 11px;
+                font-size: 13.2px;
+            }
+
+            .alerts-section {
+                padding: 12px;
+                margin-bottom: 24px;
+            }
+
+            .keywords-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-container {
+                gap: 16px;
+            }
+
+            .tab-button {
+                font-size: 12px;
+                padding: 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== LOGIN SCREEN ===== -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="./flags/LogoSAGA.png" alt="SAGA Logo" style="width: 200px; height: 75px; object-fit: contain;">
+            </div>
+            <h2 class="login-title">TENDER-TRACKER</h2>
+            <p class="login-subtitle">Accès Sécurisé</p>
+
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="passwordInput">Code d'Accès</label>
+                    <input
+                        type="password"
+                        id="passwordInput"
+                        placeholder="••••••••"
+                        required
+                        autocomplete="off"
+                    />
+                </div>
+                <button type="submit" class="login-button">Connexion</button>
+            </form>
+
+            <div class="error-message" id="errorMessage">Code incorrect. Réessayez.</div>
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard" id="dashboard">
+        <div class="main-container">
+            <div class="header-top">
+                <h1><span class="title-tender">TENDER-TRACKER</span> <span class="title-saga">SAGA</span></h1>
+                <div style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); width: 200px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <img src="./flags/LogoSAGA.png" alt="SAGA Logo" style="max-width: 100%; max-height: 100%; display: block;">
+                </div>
+            </div>
+
+            <!-- Lancement manuel de l'analyse (workflow GitHub) -->
+            <div class="scan-panel" id="scanPanel">
+                <button type="button" class="scan-launch" id="scanLaunch" onclick="launchScan()">Lancer l'analyse</button>
+                <div class="scan-progress">
+                    <div class="scan-headline" id="scanHeadline">Dernière analyse : —</div>
+                    <ol class="scan-steps" id="scanSteps" hidden></ol>
+                    <div class="scan-detail" id="scanDetail"></div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <button class="tab-button active" data-tab="alerts" onclick="switchTab('alerts')">Dernières Alertes</button>
+                <button class="tab-button" data-tab="sources" onclick="switchTab('sources')">Sources</button>
+                <button class="tab-button" data-tab="keywords" onclick="switchTab('keywords')">Mots-clés</button>
+            </div>
+
+            <!-- Alertes Tab -->
+            <div id="alerts-tab" class="tab-content active">
+                <!-- Sources bloquées ou en erreur de certificat : à consulter à la main -->
+                <div id="manualCheck" class="region-section manual-check" hidden>
+                    <div class="region-title">À vérifier manuellement</div>
+                    <p class="section-note">Le scraper ne peut pas lire ces sources (protection anti-robot ou certificat de sécurité invalide). Ouvrez-les pour vérifier les offres vous-même.</p>
+                    <table>
+                        <colgroup>
+                            <col style="width: 260px;">
+                            <col>
+                            <col style="width: 190px;">
+                            <col style="width: 150px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Problème</th>
+                                <th>Dernière lecture réussie</th>
+                                <th>Site</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manualCheckContent"></tbody>
+                    </table>
+                </div>
+
+                <!-- Bloc Récapitulatif des Offres Détectées -->
+                <div id="alertsSummary" class="region-section" style="display: none; margin-bottom: 30px;">
+                    <div class="region-title">OFFRES DETECTEES</div>
+                    <table>
+                        <colgroup>
+                            <col style="width: 280px;">
+                            <col style="width: 360px;">
+                            <col style="width: 100px;">
+                            <col style="width: 360px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Pays</th>
+                                <th>Lien</th>
+                                <th>Alerte</th>
+                                <th>Mots-clés</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alertsSummaryContent">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="sourcesHealth" class="sources-health"></div>
+
+                <!-- Tableau des régions -->
+                <div class="regions-wrapper" id="regionsContainer">
+                    <p style="text-align: center; color: #80868b; padding: 40px 0; font-size: 14.3px;">Chargement des données...</p>
+                </div>
+            </div>
+
+            <!-- Sources Tab -->
+            <div id="sources-tab" class="tab-content">
+                <div class="region-section">
+                    <div class="region-title">Toutes les sources</div>
+                    <p class="section-note">Une source introuvable, vide, injoignable ou trop lente depuis plus de 3 jours peut être corrigée avec le bouton « Modifier ». La nouvelle adresse est prise en compte à la prochaine analyse.</p>
+                    <table class="sources-table">
+                        <colgroup>
+                            <col style="width: 250px;">
+                            <col style="width: 150px;">
+                            <col>
+                            <col style="width: 190px;">
+                            <col style="width: 120px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Région</th>
+                                <th>Adresse</th>
+                                <th>État</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="sourcesContent"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Keywords Tab -->
+            <div id="keywords-tab" class="tab-content">
+                <div class="keywords-section">
+                    <div class="keywords-toolbar">
+                        <div class="section-note">
+                            <p>Ce sont les mots-clés réellement utilisés par le scraper. Les modifications sont prises en compte à la prochaine analyse.</p>
+                            <p><strong>Fort</strong> : thème précis, un seul suffit pour retenir une offre (sauf achat de fournitures ou de travaux). <strong>Faible</strong> : thème large, retenu seulement si l'offre porte aussi sur une prestation de service (consultant, assistance technique, étude…).</p>
+                        </div>
+                        <div class="keywords-actions">
+                            <span class="keywords-pending" id="keywordsPending"></span>
+                            <button type="button" class="secondary-button" id="keywordsCancel" onclick="cancelKeywordChanges()" disabled>Annuler</button>
+                            <button type="button" class="primary-button" id="keywordsSave" onclick="saveKeywords()" disabled>Enregistrer</button>
+                        </div>
+                    </div>
+                    <div class="form-message" id="keywordsMessage" role="status"></div>
+                    <div id="keywordsList" class="keywords-editor">
+                        <p class="section-note">Chargement des mots-clés…</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>Tender-Tracker SAGA © 2026 | Veille Automatisée 24/7</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modification d'une source -->
+    <div class="modal-backdrop" id="sourceModal" hidden>
+        <form class="modal" id="sourceForm" onsubmit="saveSourceEdit(event)">
+            <h3 class="modal-title">Modifier la source <span id="sourceModalName"></span></h3>
+            <label class="modal-label" for="sourceCurrentUrl">Adresse actuelle</label>
+            <input id="sourceCurrentUrl" class="modal-input" type="text" readonly>
+            <label class="modal-label" for="sourceNewUrl">Nouvelle adresse</label>
+            <input id="sourceNewUrl" class="modal-input" type="url" placeholder="https://" required autocomplete="off">
+            <p class="modal-warning">Les offres de cette source repartent de zéro avec la nouvelle adresse : elles seront signalées comme nouvelles à la prochaine analyse.</p>
+            <div class="form-message" id="sourceModalMessage" role="status"></div>
+            <div class="modal-actions">
+                <button type="button" class="secondary-button" onclick="closeSourceModal()">Annuler</button>
+                <button type="submit" class="primary-button" id="sourceModalSave">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // data.json est chiffré avec le code d'accès : sans le bon code, la page n'a rien à afficher.
+        // Le code reste en mémoire le temps de la session (jamais stocké) pour relire et réécrire les données.
+        let sessionPassword = null;
+        let currentData = null;
+        // Dépôt déduit de l'adresse GitHub Pages (compte.github.io/depot), sinon dépôt de référence
+        const DEFAULT_REPO = 'saintamansglobaladvisory-bit/tender-tracker-saga';
+        const REPO = (() => {
+            const owner = location.hostname.match(/^([a-z0-9-]+)\.github\.io$/i);
+            const name = location.pathname.split('/').filter(Boolean)[0];
+            return owner && name ? `${owner[1]}/${name}` : DEFAULT_REPO;
+        })();
+        const API_ROOT = `https://api.github.com/repos/${REPO}`;
+        const WORKFLOW_FILE = 'scraper.yml';
+        const ENCRYPTION_FORMAT = 'tt-enc-v1';
+        const KDF_ITERATIONS = 600000;
+        const keyCache = new Map();
+
+        let sourcesData = [];
+        let detectionsMap = {};
+        let sourceStatus = {};
+        const PERSISTENT_FAILURE_RUNS = 3;
+
+        // Lien externe : seulement http(s), jamais javascript: ou data:
+        function safeUrl(value) {
+            try {
+                const url = new URL(String(value || ''));
+                return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : '#';
+            } catch (error) {
+                return '#';
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        function formatDate(iso) {
+            if (!iso) return 'jamais';
+            return new Date(iso).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+        }
+
+        // Lien vers la page source qui surligne l'offre détectée (#:~:text=, ignoré par les navigateurs qui ne le gèrent pas)
+        function stripAccents(text) {
+            return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+        }
+
+        function highlightUrl(url, detection) {
+            const title = (detection.title || '').replace(/\.\.\.$/, '').trim();
+            if (!title) return url;
+            // Titre d'une ligne de tableau = cellules jointes par " | " : on garde la cellule qui contient le mot-clé
+            const cells = title.split(' | ').filter(c => c.trim());
+            const keyword = stripAccents((detection.matched_keywords || [])[0] || '');
+            const cell = cells.find(c => keyword && stripAccents(c).includes(keyword)) || cells[0];
+            const snippet = cell.split(/\s+/).slice(0, 8).join(' ');
+            if (!snippet) return url;
+            const encoded = encodeURIComponent(snippet).replace(/-/g, '%2D');
+            return `${url}${url.includes('#') ? '' : '#'}:~:text=${encoded}`;
+        }
+
+        function sourceStateBadge(url) {
+            const status = sourceStatus[url];
+            if (!status || status.state === 'ok') return '';
+            const failures = status.consecutive_failures || 0;
+            const tooltip = `${status.label}${status.detail ? ' : ' + status.detail : ''}\n`
+                + `${failures} échec(s) consécutif(s)\n`
+                + `Dernière analyse réussie : ${formatDate(status.last_ok)}\n`
+                + `Vérifié le ${formatDate(status.checked_at)}`;
+            const persistent = failures >= PERSISTENT_FAILURE_RUNS ? ' persistent' : '';
+            return `<span class="source-state${persistent}" title="${escapeHtml(tooltip)}">${escapeHtml(status.label)}</span>`;
+        }
+
+        function renderSourcesHealth() {
+            const container = document.getElementById('sourcesHealth');
+            const entries = Object.values(sourceStatus);
+            if (!entries.length) {
+                container.textContent = '';
+                return;
+            }
+            const failing = entries.filter(s => s.state !== 'ok');
+            const persistent = failing.filter(s => (s.consecutive_failures || 0) >= PERSISTENT_FAILURE_RUNS);
+            const checked = entries.map(s => s.checked_at).filter(Boolean).sort().pop();
+            container.textContent = `${entries.length - failing.length} / ${entries.length} sources analysées le ${formatDate(checked)}`
+                + (failing.length ? ` · ${failing.length} en échec, dont ${persistent.length} depuis ${PERSISTENT_FAILURE_RUNS} runs ou plus (survolez les badges pour le détail)` : '');
+        }
+        // ===== ONGLETS =====
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.toggle('active', tab.id === tabName + '-tab');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
+            });
+            if (tabName === 'sources') loadSourcesConfig();
+            if (tabName === 'keywords' && !keywordsState.loaded) loadKeywords();
+        }
+
+        // ===== CHIFFREMENT (AES-GCM, clé dérivée du code d'accès, même format que le scraper) =====
+        function bytesFromBase64(b64) {
+            const binary = atob(String(b64).replace(/\s/g, ''));
+            return Uint8Array.from(binary, c => c.charCodeAt(0));
+        }
+
+        function base64FromBytes(bytes) {
+            let binary = '';
+            for (let i = 0; i < bytes.length; i += 0x8000) {
+                binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+            }
+            return btoa(binary);
+        }
+
+        async function deriveKey(password, salt, iterations) {
+            const cacheKey = `${iterations}:${base64FromBytes(salt)}`;
+            if (keyCache.has(cacheKey)) return keyCache.get(cacheKey);
+            const material = await crypto.subtle.importKey(
+                'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+            const key = await crypto.subtle.deriveKey(
+                { name: 'PBKDF2', hash: 'SHA-256', salt, iterations },
+                material, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+            keyCache.set(cacheKey, key);
+            return key;
+        }
+
+        function isEncrypted(data) {
+            return Boolean(data) && data.format === ENCRYPTION_FORMAT;
+        }
+
+        // Lève une erreur si le code est faux (tag AES-GCM invalide)
+        async function decryptEnvelope(envelope, password) {
+            const key = await deriveKey(password, bytesFromBase64(envelope.salt), Number(envelope.iterations));
+            const plain = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: bytesFromBase64(envelope.iv) }, key, bytesFromBase64(envelope.ciphertext));
+            return JSON.parse(new TextDecoder().decode(plain));
+        }
+
+        async function encryptData(data, password) {
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const key = await deriveKey(password, salt, KDF_ITERATIONS);
+            const ciphertext = new Uint8Array(await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(data))));
+            return {
+                format: ENCRYPTION_FORMAT, kdf: 'PBKDF2-SHA256', iterations: KDF_ITERATIONS,
+                salt: base64FromBytes(salt), iv: base64FromBytes(iv), ciphertext: base64FromBytes(ciphertext)
+            };
+        }
+
+        // ===== AUTHENTIFICATION =====
+        function showLoginError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const passwordInput = document.getElementById('passwordInput');
+            const button = event.target.querySelector('button[type="submit"]');
+            document.getElementById('errorMessage').style.display = 'none';
+            button.disabled = true;
+            button.textContent = 'Vérification…';
+            keyCache.clear();
+            try {
+                const envelope = await fetchPublishedData();
+                if (!envelope) {
+                    showLoginError("Aucune donnée pour l'instant : ajoutez le secret DASHBOARD_PASSWORD sur GitHub, puis lancez la première analyse depuis l'onglet Actions.");
+                    return;
+                }
+                if (!isEncrypted(envelope)) {
+                    showLoginError("Les données ne sont pas encore chiffrées : ajoutez le secret DASHBOARD_PASSWORD sur GitHub, puis lancez l'analyse une fois depuis l'onglet Actions.");
+                    return;
+                }
+                let data;
+                try {
+                    data = await decryptEnvelope(envelope, passwordInput.value);
+                } catch (error) {
+                    keyCache.clear();
+                    showLoginError('Code incorrect. Réessayez.');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                    return;
+                }
+                sessionPassword = passwordInput.value;
+                passwordInput.value = '';
+                showDashboard();
+                applyData(data);
+                resumeScanTracking();
+            } catch (error) {
+                console.error('Erreur de connexion:', error);
+                showLoginError('Impossible de charger les données. Vérifiez votre connexion et réessayez.');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Connexion';
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+        }
+
+// ===== CHARGEMENT DES DONNÉES =====
+        // Copie publiée par GitHub Pages (chiffrée)
+        async function fetchPublishedData() {
+            const response = await fetch(`data.json?_=${Date.now()}`, { cache: 'no-store' });
+            if (response.status === 404) {
+                // Nouveau dépôt : data.json est créé (chiffré) par la première analyse
+                return null;
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        }
+
+        async function loadData() {
+            try {
+                const envelope = await fetchPublishedData();
+                if (!envelope) return;
+                const data = isEncrypted(envelope) ? await decryptEnvelope(envelope, sessionPassword) : envelope;
+                // Pages peut servir une copie plus ancienne que celle lue sur GitHub après une analyse
+                if (currentData && (data.last_updated || '') < (currentData.last_updated || '')) return;
+                applyData(data);
+            } catch (error) {
+                console.error('Erreur:', error);
+                if (!currentData) {
+                    document.getElementById('regionsContainer').innerHTML =
+                        '<p style="text-align: center; color: #d32f2f; padding: 40px 0; font-size: 14.3px;">Erreur lors du chargement des données</p>';
+                }
+            }
+        }
+
+        function applyData(data) {
+            currentData = data;
+            sourcesData = data.sources || [];
+            sourceStatus = data.source_status || {};
+
+            // Indexer les détections par pays
+            detectionsMap = {};
+            (Array.isArray(data.tenders) ? data.tenders : []).forEach(tender => {
+                if (tender.country) {
+                    if (!detectionsMap[tender.country]) {
+                        detectionsMap[tender.country] = [];
+                    }
+                    detectionsMap[tender.country].push(tender);
+                }
+            });
+
+            renderTable();
+            renderAlertsSummary();
+            renderSourcesHealth();
+            renderManualCheck();
+            renderSourcesTab();
+            if (!scanTracking) renderScanIdle();
+        }
+
+        // ===== TOKEN ET API GITHUB =====
+        const TOKEN_HELP = "Token GitHub requis (une seule fois sur cet ordinateur).\n\n"
+            + "Créez un token « fine-grained » sur https://github.com/settings/personal-access-tokens/new :\n"
+            + `- Repository access : uniquement ${REPO}\n`
+            + "- Permissions : Contents et Actions en « Read and write »\n\n"
+            + "Collez-le ici :";
+
+        function savedToken() {
+            try {
+                return localStorage.getItem('githubToken');
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function getToken() {
+            const saved = savedToken();
+            if (saved) return saved;
+            const entered = (prompt(TOKEN_HELP) || '').trim();
+            if (!entered) return null;
+            try {
+                localStorage.setItem('githubToken', entered);
+            } catch (error) {
+                // Stockage indisponible : le token ne vaut que pour cette action
+            }
+            return entered;
+        }
+
+        function forgetToken() {
+            try {
+                localStorage.removeItem('githubToken');
+            } catch (error) {
+                // rien à effacer
+            }
+        }
+
+        function apiHeaders(token, accept = 'application/vnd.github+json') {
+            const headers = { 'Accept': accept, 'X-GitHub-Api-Version': '2022-11-28' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            return headers;
+        }
+
+        function apiErrorMessage(status, action) {
+            if (status === 401) {
+                forgetToken();
+                return 'Token refusé par GitHub (expiré ou invalide). Un nouveau token vous sera demandé au prochain essai.';
+            }
+            if (status === 403 || status === 404) {
+                return `Le token n'a pas le droit de ${action}. Vérifiez ses permissions : Contents et Actions en « Read and write » sur ce dépôt.`;
+            }
+            return `Erreur GitHub (HTTP ${status}).`;
+        }
+
+        const UPDATE_ATTEMPTS = 3;
+
+        function base64ToUtf8(b64) {
+            return new TextDecoder().decode(bytesFromBase64(b64));
+        }
+
+        function utf8ToBase64(text) {
+            return base64FromBytes(new TextEncoder().encode(text));
+        }
+
+        // Lit un fichier du dépôt sur main : { status, text, sha }
+        async function fetchRepoFile(path, token) {
+            const response = await fetch(`${API_ROOT}/contents/${path}?ref=main`, { headers: apiHeaders(token), cache: 'no-store' });
+            if (!response.ok) {
+                return { status: response.status };
+            }
+            const file = await response.json();
+            let text;
+            if (file.content) {
+                text = base64ToUtf8(file.content);
+            } else {
+                // Au-delà de 1 Mo, l'API ne renvoie pas le contenu : lecture du blob brut
+                const blob = await fetch(file.git_url, { headers: apiHeaders(token, 'application/vnd.github.raw'), cache: 'no-store' });
+                if (!blob.ok) {
+                    return { status: blob.status };
+                }
+                text = await blob.text();
+            }
+            return { status: 200, text, sha: file.sha };
+        }
+
+        // Réécrit un fichier à partir de sa version à jour : `transform(texte)` renvoie le nouveau texte.
+        // Si le fichier a changé entre la lecture et l'écriture (sha périmé), on relit et on réessaie.
+        async function updateRepoFile(path, transform, token, message) {
+            try {
+                for (let attempt = 1; attempt <= UPDATE_ATTEMPTS; attempt++) {
+                    const current = await fetchRepoFile(path, token);
+                    if (current.status !== 200) {
+                        return { success: false, status: current.status, error: apiErrorMessage(current.status, 'lire les fichiers') };
+                    }
+                    const text = await transform(current.text);
+                    const response = await fetch(`${API_ROOT}/contents/${path}`, {
+                        method: 'PUT',
+                        headers: { ...apiHeaders(token), 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message, content: utf8ToBase64(text), sha: current.sha, branch: 'main' })
+                    });
+                    if (response.ok) {
+                        return { success: true, text };
+                    }
+                    if ((response.status === 409 || response.status === 422) && attempt < UPDATE_ATTEMPTS) {
+                        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+                        continue;
+                    }
+                    return { success: false, status: response.status, error: apiErrorMessage(response.status, 'modifier les fichiers') };
+                }
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        // data.json est relu, modifié puis rechiffré avec le code de la session
+        async function updateDataJsonOnGitHub(modify, token, message) {
+            return updateRepoFile('docs/data.json', async text => {
+                const stored = JSON.parse(text);
+                const data = isEncrypted(stored) ? await decryptEnvelope(stored, sessionPassword) : stored;
+                modify(data);
+                return JSON.stringify(await encryptData(data, sessionPassword), null, 2) + '\n';
+            }, token, `🗑️ ${message}`);
+        }
+
+        // ===== SUPPRESSION DES DÉTECTIONS =====
+        async function resetDetection(detectionId, country) {
+            if (!confirm(`Supprimer cette alerte pour ${country} ?`)) {
+                return;
+            }
+            const token = getToken();
+            if (!token) return;
+            // La suppression s'applique à la version à jour du fichier sur GitHub,
+            // pas à la copie servie par Pages (qui peut dater d'avant le dernier scan)
+            const result = await updateDataJsonOnGitHub(
+                data => { data.tenders = (data.tenders || []).filter(t => t.id !== detectionId); },
+                token,
+                `Remove detection for ${country}`
+            );
+            if (result.success) {
+                alert('✅ Alerte supprimée pour tous les utilisateurs !');
+                await loadDataFromGitHub(token);
+            } else {
+                alert('❌ ' + result.error);
+            }
+        }
+
+        // Version à jour sur main, sans attendre la republication de GitHub Pages
+        async function loadDataFromGitHub(token) {
+            const file = await fetchRepoFile('docs/data.json', token);
+            if (file.status !== 200) throw new Error(apiErrorMessage(file.status, 'lire les fichiers'));
+            const stored = JSON.parse(file.text);
+            applyData(isEncrypted(stored) ? await decryptEnvelope(stored, sessionPassword) : stored);
+        }
+
+        // ===== LANCEMENT ET SUIVI DE L'ANALYSE =====
+        const SCAN_POLL_MS = 10000;
+        // Étapes affichées, repérées par le premier pas du workflow qui les compose
+        const SCAN_STAGES = [
+            { key: 'queue', label: 'En attente d’un serveur GitHub' },
+            { key: 'setup', label: 'Préparation' },
+            { key: 'tests', label: 'Tests', firstStep: 'Run Tests' },
+            { key: 'scan', label: 'Analyse des sources (10 à 15 min)', firstStep: 'Setup Chrome for Selenium' },
+            { key: 'push', label: 'Enregistrement des résultats', firstStep: 'Configure Git' },
+            { key: 'load', label: 'Chargement des nouveaux résultats' }
+        ];
+        let scanTracking = null;
+
+        function formatDuration(ms) {
+            const minutes = Math.floor(ms / 60000);
+            const seconds = Math.floor((ms % 60000) / 1000);
+            return minutes ? `${minutes} min ${String(seconds).padStart(2, '0')} s` : `${seconds} s`;
+        }
+
+        function setScanButton(busy, label) {
+            const button = document.getElementById('scanLaunch');
+            button.disabled = busy;
+            button.textContent = label || (busy ? 'Analyse en cours…' : "Lancer l'analyse");
+        }
+
+        function setScanText(headline, detailHtml = '') {
+            document.getElementById('scanHeadline').textContent = headline;
+            document.getElementById('scanDetail').innerHTML = detailHtml;
+        }
+
+        function renderScanIdle() {
+            const last = currentData && currentData.last_updated;
+            setScanText(`Dernière analyse : ${formatDate(last)}`);
+        }
+
+        function renderScanSteps(states) {
+            const list = document.getElementById('scanSteps');
+            list.hidden = !states;
+            if (!states) return;
+            list.innerHTML = SCAN_STAGES.map(stage => {
+                const state = states[stage.key] || 'todo';
+                return `<li class="scan-step ${state}"><span class="scan-step-mark" aria-hidden="true"></span>${escapeHtml(stage.label)}</li>`;
+            }).join('');
+        }
+
+        // État de chaque étape d'après le run et les pas de son job
+        function stageStates(run, job) {
+            const states = {};
+            const order = SCAN_STAGES.map(stage => stage.key);
+            const markUntil = (key, state) => {
+                order.forEach((k, i) => { if (i < order.indexOf(key)) states[k] = 'done'; });
+                states[key] = state;
+            };
+            if (run.status !== 'in_progress' && run.status !== 'completed') {
+                states.queue = 'current';
+                return states;
+            }
+            states.queue = 'done';
+            const stepStage = {};
+            let stage = 'setup';
+            (job ? job.steps : []).forEach(step => {
+                const anchor = SCAN_STAGES.find(s => s.firstStep === step.name);
+                if (anchor) stage = anchor.key;
+                if (step.name === 'Notify Failure' || step.name.startsWith('Post ') || step.name === 'Complete job') return;
+                (stepStage[stage] = stepStage[stage] || []).push(step);
+            });
+            let current = 'setup';
+            for (const key of ['setup', 'tests', 'scan', 'push']) {
+                const steps = stepStage[key] || [];
+                if (steps.some(step => step.conclusion === 'failure' || step.conclusion === 'cancelled')) {
+                    markUntil(key, 'failed');
+                    return states;
+                }
+                if (steps.length && steps.every(step => step.status === 'completed')) {
+                    current = order[order.indexOf(key) + 1];
+                } else {
+                    break;
+                }
+            }
+            if (run.status === 'completed' && run.conclusion !== 'success') {
+                markUntil(current === 'load' ? 'push' : current, 'failed');
+                return states;
+            }
+            markUntil(current, 'current');
+            return states;
+        }
+
+        async function listScanRuns(token) {
+            const response = await fetch(`${API_ROOT}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=10`,
+                { headers: apiHeaders(token), cache: 'no-store' });
+            if (!response.ok) throw new Error(apiErrorMessage(response.status, 'consulter les analyses'));
+            return (await response.json()).workflow_runs || [];
+        }
+
+        async function launchScan() {
+            const token = getToken();
+            if (!token) return;
+            setScanButton(true, 'Envoi de la demande…');
+            renderScanSteps(null);
+            setScanText('Envoi de la demande à GitHub…');
+            try {
+                const runs = await listScanRuns(token);
+                const active = runs.find(run => run.status !== 'completed');
+                if (active) {
+                    // Une analyse tourne déjà (programmée ou lancée ailleurs) : on la suit
+                    trackRun(active.id, token);
+                    return;
+                }
+                const latestId = runs.length ? runs[0].id : 0;
+                const response = await fetch(`${API_ROOT}/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
+                    method: 'POST',
+                    headers: { ...apiHeaders(token), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref: 'main' })
+                });
+                if (!response.ok) throw new Error(apiErrorMessage(response.status, 'lancer une analyse'));
+                await waitForNewRun(latestId, token);
+            } catch (error) {
+                scanTracking = null;
+                setScanButton(false);
+                setScanText("L'analyse n'a pas pu être lancée.", escapeHtml(error.message));
+            }
+        }
+
+        // GitHub met quelques secondes à créer le run demandé
+        async function waitForNewRun(latestId, token) {
+            const deadline = Date.now() + 60000;
+            while (Date.now() < deadline) {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                const created = (await listScanRuns(token)).find(run => run.id > latestId);
+                if (created) {
+                    trackRun(created.id, token);
+                    return;
+                }
+            }
+            throw new Error("GitHub n'a pas encore démarré l'analyse. Elle apparaîtra dans l'onglet Actions du dépôt.");
+        }
+
+        function trackRun(runId, token) {
+            const tracking = { runId };
+            scanTracking = tracking;
+            setScanButton(true);
+            const poll = async () => {
+                if (scanTracking !== tracking) return;
+                try {
+                    const runResponse = await fetch(`${API_ROOT}/actions/runs/${runId}`, { headers: apiHeaders(token), cache: 'no-store' });
+                    if (!runResponse.ok) throw new Error(apiErrorMessage(runResponse.status, 'consulter les analyses'));
+                    const run = await runResponse.json();
+                    const jobsResponse = await fetch(`${API_ROOT}/actions/runs/${runId}/jobs`, { headers: apiHeaders(token), cache: 'no-store' });
+                    const job = jobsResponse.ok ? ((await jobsResponse.json()).jobs || [])[0] : null;
+                    const states = stageStates(run, job);
+                    renderScanSteps(states);
+                    const started = new Date(run.run_started_at || run.created_at);
+                    const elapsed = formatDuration(Date.now() - started);
+                    const logLink = `<a href="${safeUrl(run.html_url)}" target="_blank" rel="noopener noreferrer">Voir le détail sur GitHub</a>`;
+                    if (run.status !== 'completed') {
+                        const label = run.status === 'in_progress' ? `Analyse en cours depuis ${elapsed}` : 'Analyse demandée, en attente de démarrage';
+                        setScanText(label, logLink);
+                        setTimeout(poll, SCAN_POLL_MS);
+                        return;
+                    }
+                    if (run.conclusion !== 'success') {
+                        scanTracking = null;
+                        setScanButton(false);
+                        setScanText(`L'analyse a échoué après ${elapsed}.`, logLink);
+                        return;
+                    }
+                    setScanText(`Analyse terminée en ${elapsed}. Chargement des résultats…`, logLink);
+                    await loadDataFromGitHub(token);
+                    renderScanSteps(Object.fromEntries(SCAN_STAGES.map(stage => [stage.key, 'done'])));
+                    scanTracking = null;
+                    setScanButton(false);
+                    const offers = (currentData.tenders || []).length;
+                    setScanText(`Analyse terminée le ${formatDate(currentData.last_updated)} : ${offers} offre(s) active(s).`, logLink);
+                } catch (error) {
+                    if (scanTracking !== tracking) return;
+                    // Erreur réseau passagère : on réessaie au prochain tour
+                    document.getElementById('scanDetail').textContent = `Suivi interrompu (${error.message}). Nouvel essai dans 10 s.`;
+                    setTimeout(poll, SCAN_POLL_MS);
+                }
+            };
+            poll();
+        }
+
+        // À la connexion, reprend le suivi d'une analyse déjà en cours
+        async function resumeScanTracking() {
+            const token = savedToken();
+            if (!token) return;
+            try {
+                const active = (await listScanRuns(token)).find(run => run.status !== 'completed');
+                if (active) trackRun(active.id, token);
+            } catch (error) {
+                console.warn('Suivi des analyses indisponible :', error.message);
+            }
+        }
+
+        // ===== MOTS-CLÉS (scripts/keywords.json, rangés par langue) =====
+        const KEYWORD_KINDS = {
+            strong: { title: 'Forts', label: 'mots-clés forts', hint: 'un seul suffit pour retenir une offre' },
+            weak: { title: 'Faibles', label: 'mots-clés faibles', hint: 'retenus seulement si l’offre porte aussi sur une prestation de service (consultant, étude…)' }
+        };
+        const KEYWORD_LANGUAGES = { fr: 'Français', en: 'Anglais', es: 'Espagnol', pt: 'Portugais', ar: 'Arabe' };
+        const KEYWORD_MIN_CHARS = 2;
+        const KEYWORD_MAX_CHARS = 120;
+        // { strong: { fr: [...], ... }, weak: { ... } }
+        const keywordsState = { loaded: false, original: null, current: null };
+
+        // Même normalisation que le scraper : sans accents, minuscules, espaces unifiés
+        function normalizeKeyword(text) {
+            return String(text).replace(/[’‘]/g, "'").replace(/ /g, ' ')
+                .normalize('NFKD').toLowerCase().replace(/\p{Mn}/gu, '')
+                .split(/\s+/).filter(Boolean).join(' ');
+        }
+
+        function cloneKeywords(keywords) {
+            const copy = {};
+            for (const kind of Object.keys(KEYWORD_KINDS)) {
+                copy[kind] = {};
+                for (const lang of Object.keys(KEYWORD_LANGUAGES)) {
+                    copy[kind][lang] = [...((keywords[kind] || {})[lang] || [])];
+                }
+            }
+            return copy;
+        }
+
+        // [{ kind, lang, term }] pour tout le fichier
+        function flattenKeywords(keywords) {
+            const all = [];
+            for (const kind of Object.keys(KEYWORD_KINDS)) {
+                for (const lang of Object.keys(KEYWORD_LANGUAGES)) {
+                    (keywords[kind][lang] || []).forEach(term => all.push({ kind, lang, term }));
+                }
+            }
+            return all;
+        }
+
+        const keywordKey = entry => `${entry.kind}|${entry.lang}|${normalizeKeyword(entry.term)}`;
+
+        function setMessage(id, text, kind) {
+            const element = document.getElementById(id);
+            element.textContent = text || '';
+            element.className = 'form-message' + (kind ? ' ' + kind : '');
+        }
+
+        async function loadKeywords() {
+            try {
+                const file = await fetchRepoFile('scripts/keywords.json', savedToken());
+                if (file.status !== 200) throw new Error(apiErrorMessage(file.status, 'lire les fichiers'));
+                const keywords = JSON.parse(file.text);
+                keywordsState.original = cloneKeywords(keywords);
+                keywordsState.current = cloneKeywords(keywords);
+                keywordsState.loaded = true;
+                setMessage('keywordsMessage', '');
+                renderKeywords();
+            } catch (error) {
+                document.getElementById('keywordsList').innerHTML =
+                    `<p class="section-note">Impossible de charger les mots-clés : ${escapeHtml(error.message)}</p>`;
+            }
+        }
+
+        function keywordError(term) {
+            const value = term.trim();
+            if (value.length < KEYWORD_MIN_CHARS || value.length > KEYWORD_MAX_CHARS) {
+                return `Un mot-clé doit faire entre ${KEYWORD_MIN_CHARS} et ${KEYWORD_MAX_CHARS} caractères.`;
+            }
+            if (!/[\p{L}\p{N}]/u.test(value)) {
+                return 'Un mot-clé doit contenir au moins une lettre ou un chiffre.';
+            }
+            const norm = normalizeKeyword(value);
+            const existing = flattenKeywords(keywordsState.current).find(entry => normalizeKeyword(entry.term) === norm);
+            if (existing) {
+                return `« ${existing.term} » existe déjà (${KEYWORD_LANGUAGES[existing.lang]}, ${KEYWORD_KINDS[existing.kind].label}).`;
+            }
+            return null;
+        }
+
+        function keywordChanges() {
+            if (!keywordsState.loaded) return { added: 0, removed: 0 };
+            const before = new Set(flattenKeywords(keywordsState.original).map(keywordKey));
+            const after = new Set(flattenKeywords(keywordsState.current).map(keywordKey));
+            return {
+                added: [...after].filter(key => !before.has(key)).length,
+                removed: [...before].filter(key => !after.has(key)).length
+            };
+        }
+
+        function renderKeywords() {
+            const container = document.getElementById('keywordsList');
+            const original = new Set(flattenKeywords(keywordsState.original).map(keywordKey));
+            container.innerHTML = Object.entries(KEYWORD_LANGUAGES).map(([lang, languageName]) => {
+                const total = Object.keys(KEYWORD_KINDS).reduce((n, kind) => n + keywordsState.current[kind][lang].length, 0);
+                const groups = Object.entries(KEYWORD_KINDS).map(([kind, info]) => {
+                    const terms = keywordsState.current[kind][lang];
+                    const chips = terms.map((term, index) => {
+                        const added = original.has(keywordKey({ kind, lang, term })) ? '' : ' added';
+                        return `<span class="kw-chip${added}">${escapeHtml(term)}`
+                            + `<button type="button" class="kw-remove" onclick="removeKeyword('${kind}', '${lang}', ${index})" aria-label="Retirer ${escapeHtml(term)}">×</button></span>`;
+                    }).join('');
+                    return `
+                        <div class="kw-group">
+                            <div class="kw-group-title">${info.title} (${terms.length}) <span class="kw-group-hint">· ${info.hint}</span></div>
+                            <div class="kw-chips">${chips || '<span class="section-note">Aucun</span>'}</div>
+                        </div>`;
+                }).join('');
+                return `
+                    <div class="keywords-category" ${lang === 'ar' ? 'dir="auto"' : ''}>
+                        <div class="keywords-category-title">${languageName} (${total})</div>
+                        ${groups}
+                        <form class="kw-add" onsubmit="addKeyword(event, '${lang}')">
+                            <label class="visually-hidden" for="kw-input-${lang}">Nouveau mot-clé en ${languageName.toLowerCase()}</label>
+                            <input id="kw-input-${lang}" class="kw-input" type="text" maxlength="${KEYWORD_MAX_CHARS}" placeholder="Nouveau mot-clé" autocomplete="off">
+                            <label class="visually-hidden" for="kw-kind-${lang}">Type de mot-clé</label>
+                            <select id="kw-kind-${lang}" class="kw-select">
+                                <option value="strong">Fort</option>
+                                <option value="weak">Faible</option>
+                            </select>
+                            <button type="submit" class="secondary-button">Ajouter</button>
+                        </form>
+                    </div>`;
+            }).join('');
+            const { added, removed } = keywordChanges();
+            const dirty = added + removed > 0;
+            document.getElementById('keywordsPending').textContent = dirty
+                ? `${added} ajout(s), ${removed} retrait(s) non enregistré(s)` : '';
+            document.getElementById('keywordsSave').disabled = !dirty;
+            document.getElementById('keywordsCancel').disabled = !dirty;
+        }
+
+        function addKeyword(event, lang) {
+            event.preventDefault();
+            const input = document.getElementById(`kw-input-${lang}`);
+            const kind = document.getElementById(`kw-kind-${lang}`).value;
+            const error = keywordError(input.value);
+            if (error) {
+                setMessage('keywordsMessage', error, 'error');
+                input.focus();
+                return;
+            }
+            keywordsState.current[kind][lang].push(input.value.trim());
+            setMessage('keywordsMessage', '');
+            renderKeywords();
+            document.getElementById(`kw-kind-${lang}`).value = kind;
+            document.getElementById(`kw-input-${lang}`).focus();
+        }
+
+        function removeKeyword(kind, lang, index) {
+            const strongCount = Object.values(keywordsState.current.strong).reduce((n, terms) => n + terms.length, 0);
+            if (kind === 'strong' && strongCount === 1) {
+                setMessage('keywordsMessage', 'Il faut garder au moins un mot-clé fort.', 'error');
+                return;
+            }
+            keywordsState.current[kind][lang].splice(index, 1);
+            setMessage('keywordsMessage', '');
+            renderKeywords();
+        }
+
+        function cancelKeywordChanges() {
+            keywordsState.current = cloneKeywords(keywordsState.original);
+            setMessage('keywordsMessage', '');
+            renderKeywords();
+        }
+
+        async function saveKeywords() {
+            const token = getToken();
+            if (!token) return;
+            document.getElementById('keywordsSave').disabled = true;
+            setMessage('keywordsMessage', 'Enregistrement…');
+            // Les ajouts et retraits sont appliqués à la version à jour du fichier
+            const before = new Set(flattenKeywords(keywordsState.original).map(keywordKey));
+            const after = new Set(flattenKeywords(keywordsState.current).map(keywordKey));
+            const removed = new Set([...before].filter(key => !after.has(key)));
+            const added = flattenKeywords(keywordsState.current).filter(entry => !before.has(keywordKey(entry)));
+            const result = await updateRepoFile('scripts/keywords.json', text => {
+                const fresh = cloneKeywords(JSON.parse(text));
+                for (const kind of Object.keys(KEYWORD_KINDS)) {
+                    for (const lang of Object.keys(KEYWORD_LANGUAGES)) {
+                        fresh[kind][lang] = fresh[kind][lang].filter(term => !removed.has(keywordKey({ kind, lang, term })));
+                    }
+                }
+                added.forEach(entry => {
+                    const norm = normalizeKeyword(entry.term);
+                    if (!flattenKeywords(fresh).some(other => normalizeKeyword(other.term) === norm)) {
+                        fresh[entry.kind][entry.lang].push(entry.term);
+                    }
+                });
+                if (!Object.values(fresh.strong).some(terms => terms.length)) {
+                    throw new Error('Il faut garder au moins un mot-clé fort.');
+                }
+                return JSON.stringify(fresh, null, 2) + '\n';
+            }, token, '🔑 Mots-clés modifiés depuis le dashboard');
+            if (!result.success) {
+                setMessage('keywordsMessage', result.error, 'error');
+                renderKeywords();
+                return;
+            }
+            const saved = JSON.parse(result.text);
+            keywordsState.original = cloneKeywords(saved);
+            keywordsState.current = cloneKeywords(saved);
+            renderKeywords();
+            setMessage('keywordsMessage', 'Mots-clés enregistrés. Ils seront utilisés à la prochaine analyse.', 'ok');
+        }
+
+        // ===== SOURCES (scripts/sources.json) =====
+        // Adresses à jour, y compris celles modifiées depuis la dernière analyse
+        let sourcesConfig = null;
+        const BROKEN_STATES = new Set(['not_found', 'empty', 'timeout', 'unreachable']);
+        const CERT_ERROR_RE = /ERR_CERT|SSL|certificat/i;
+        const EDIT_AFTER_DAYS = 3;
+        const DAY_MS = 24 * 3600 * 1000;
+
+        // Bloquée par une protection anti-robot ou par un certificat : à consulter à la main
+        function needsManualCheck(status) {
+            return Boolean(status) && status.state !== 'ok'
+                && (status.state === 'blocked' || CERT_ERROR_RE.test(status.detail || ''));
+        }
+
+        function failingSince(status) {
+            if (status.failing_since) return new Date(status.failing_since);
+            // Statut écrit avant l'ajout du champ : une analyse par jour
+            if (status.consecutive_failures && status.checked_at) {
+                return new Date(new Date(status.checked_at) - (status.consecutive_failures - 1) * DAY_MS);
+            }
+            return null;
+        }
+
+        function isEditable(status) {
+            if (!status || needsManualCheck(status) || !BROKEN_STATES.has(status.state)) return false;
+            const since = failingSince(status);
+            return Boolean(since) && Date.now() - since >= EDIT_AFTER_DAYS * DAY_MS;
+        }
+
+        async function loadSourcesConfig() {
+            try {
+                const file = await fetchRepoFile('scripts/sources.json', savedToken());
+                if (file.status === 200) {
+                    sourcesConfig = JSON.parse(file.text);
+                    renderSourcesTab();
+                }
+            } catch (error) {
+                console.warn('sources.json indisponible :', error.message);
+            }
+        }
+
+        function renderManualCheck() {
+            const block = document.getElementById('manualCheck');
+            const rows = sourcesData.filter(source => needsManualCheck(sourceStatus[source.url])).map(source => {
+                const status = sourceStatus[source.url];
+                const problem = status.state === 'blocked' ? 'Protection anti-robot' : 'Certificat de sécurité invalide';
+                return `
+                    <tr>
+                        <td class="country-cell">${getCountryDisplay(source.country)}</td>
+                        <td title="${escapeHtml(status.detail || '')}">${problem}</td>
+                        <td>${escapeHtml(formatDate(status.last_ok))}</td>
+                        <td><a href="${safeUrl(source.url)}" target="_blank" rel="noopener noreferrer">Ouvrir le site</a></td>
+                    </tr>`;
+            });
+            block.hidden = rows.length === 0;
+            document.getElementById('manualCheckContent').innerHTML = rows.join('');
+        }
+
+        function renderSourcesTab() {
+            const list = sourcesConfig || sourcesData;
+            const scannedUrls = new Set(sourcesData.map(source => source.url));
+            document.getElementById('sourcesContent').innerHTML = list.map(source => {
+                const status = sourceStatus[source.url];
+                let stateHtml;
+                let action = '';
+                if (!scannedUrls.has(source.url)) {
+                    stateHtml = '<span class="pill pending">Nouvelle adresse : prise en compte à la prochaine analyse</span>';
+                } else if (!status) {
+                    stateHtml = '<span class="pill">Pas encore analysée</span>';
+                } else if (status.state === 'ok') {
+                    stateHtml = '<span class="pill ok">OK</span>';
+                } else {
+                    const since = failingSince(status);
+                    const kind = needsManualCheck(status) ? 'manual' : 'broken';
+                    const label = needsManualCheck(status) ? 'À vérifier manuellement' : status.label;
+                    stateHtml = `<span class="pill ${kind}" title="${escapeHtml(status.detail || '')}">${escapeHtml(label)}</span>`
+                        + (since ? `<span class="pill-note">depuis le ${escapeHtml(since.toLocaleDateString('fr-FR'))}</span>` : '');
+                    if (isEditable(status)) {
+                        action = `<button type="button" class="secondary-button" data-url="${escapeHtml(source.url)}" onclick="openSourceModal(this.dataset.url)">Modifier</button>`;
+                    }
+                }
+                return `
+                    <tr>
+                        <td class="country-cell">${getCountryDisplay(source.country)}</td>
+                        <td>${escapeHtml(source.region || '')}</td>
+                        <td class="url-cell"><a href="${safeUrl(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.url)}</a></td>
+                        <td class="status-cell">${stateHtml}</td>
+                        <td>${action}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        let editedSourceUrl = null;
+
+        function openSourceModal(url) {
+            const source = (sourcesConfig || sourcesData).find(s => s.url === url);
+            if (!source) return;
+            editedSourceUrl = url;
+            document.getElementById('sourceModalName').textContent = source.country;
+            document.getElementById('sourceCurrentUrl').value = url;
+            document.getElementById('sourceNewUrl').value = '';
+            setMessage('sourceModalMessage', '');
+            document.getElementById('sourceModal').hidden = false;
+            document.getElementById('sourceNewUrl').focus();
+        }
+
+        function closeSourceModal() {
+            document.getElementById('sourceModal').hidden = true;
+            editedSourceUrl = null;
+        }
+
+        async function saveSourceEdit(event) {
+            event.preventDefault();
+            const oldUrl = editedSourceUrl;
+            const newUrl = document.getElementById('sourceNewUrl').value.trim();
+            if (safeUrl(newUrl) === '#') {
+                setMessage('sourceModalMessage', 'Adresse invalide : elle doit commencer par http:// ou https://.', 'error');
+                return;
+            }
+            if (newUrl === oldUrl) {
+                setMessage('sourceModalMessage', "C'est déjà l'adresse actuelle.", 'error');
+                return;
+            }
+            const token = getToken();
+            if (!token) return;
+            const button = document.getElementById('sourceModalSave');
+            button.disabled = true;
+            setMessage('sourceModalMessage', 'Enregistrement…');
+            const country = document.getElementById('sourceModalName').textContent;
+            const result = await updateRepoFile('scripts/sources.json', text => {
+                const list = JSON.parse(text);
+                const source = list.find(s => s.url === oldUrl);
+                if (!source) throw new Error('Cette source a été modifiée entre-temps. Rechargez la page.');
+                if (list.some(s => s.url === newUrl)) throw new Error('Cette adresse est déjà utilisée par une autre source.');
+                source.url = newUrl;
+                return JSON.stringify(list, null, 2) + '\n';
+            }, token, `🔗 Nouvelle adresse pour ${country} (dashboard)`);
+            button.disabled = false;
+            if (!result.success) {
+                setMessage('sourceModalMessage', result.error, 'error');
+                return;
+            }
+            sourcesConfig = JSON.parse(result.text);
+            closeSourceModal();
+            renderSourcesTab();
+        }
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !document.getElementById('sourceModal').hidden) closeSourceModal();
+        });
+
+        window.addEventListener('beforeunload', event => {
+            const { added, removed } = keywordChanges();
+            if (added + removed > 0) event.preventDefault();
+        });
+
+        const COUNTRY_CODES = {
+            'Jersey': 'je', 'Cayman Islands': 'ky', 'Bermuda': 'bm', 'Liechtenstein': 'li', 'Panama': 'pa',
+            'Gibraltar': 'gi', 'St Kitts and Nevis': 'kn', 'Dominican Republic': 'do', 'Bahamas': 'bs',
+            'British Virgin Islands': 'vg', 'Bénin': 'bj', 'Burkina Faso': 'bf', 'Sénégal': 'sn',
+            'Côte d\'Ivoire': 'ci', 'Togo': 'tg', 'Niger': 'ne', 'Mauritanie': 'mr', 'Tchad': 'td',
+            'Gabon': 'ga', 'Congo-Brazzaville': 'cg', 'RDC': 'cd', 'Mali': 'ml', 'Djibouti': 'dj',
+            'Guinée': 'gn', 'Guinée (DGCMP)': 'gn', 'Guinée (ARMP)': 'gn', 'Guinée équatoriale': 'gq', 'Nigeria': 'ng', 'Kenya': 'ke', 'Cameroun': 'cm',
+            'South Africa': 'za', 'Ethiopia': 'et', 'Zambia': 'zm', 'Uganda': 'ug', 'Malawi': 'mw',
+            'Botswana': 'bw', 'Tanzania': 'tz', 'Sierra Leone': 'sl', 'Gambia': 'gm', 'Liberia': 'lr',
+            'Rwanda': 'rw', 'Mozambique': 'mz', 'Maroc': 'ma', 'Angola': 'ao', 'Tunisie': 'tn',
+            'Ghana': 'gh', 'Égypte': 'eg', 'Zimbabwe': 'zw', 'Cap Vert': 'cv', 'Lesotho': 'ls',
+            'UAE': 'ae', 'Île Maurice': 'mu', 'Oman': 'om', 'Seychelles': 'sc', 'Qatar': 'qa',
+            'Bahreïn': 'bh', 'Algérie': 'dz', 'Indonésie': 'id', 'Arabie Saoudite': 'sa',
+            'Madagascar': 'mg', 'Singapour': 'sg', 'Thaïlande': 'th', 'Comores': 'km',
+            'AFD - France': 'fr', 'GIZ - Germany': 'de', 'Norad - Norway': 'no',
+            'Danida - Denmark': 'dk', 'SIDA - Sweden': 'se', 'JICA - Japan': 'jp'
+        };
+
+        const COUNTRY_COLORS = {
+            'Bahamas': '#0066cc', 'British Virgin Islands': '#003478', 'Cayman Islands': '#003478',
+            'Panama': '#cc0000', 'Bermuda': '#00a86b', 'St Kitts and Nevis': '#00a041',
+            'Dominican Republic': '#003478', 'Jersey': '#0066cc', 'Liechtenstein': '#003478',
+            'Gibraltar': '#cc0000', 'Bénin': '#ffcc00', 'Burkina Faso': '#009543',
+            'Sénégal': '#ffcc00', 'Côte d\'Ivoire': '#ffcc00', 'Togo': '#ffcc00',
+            'Niger': '#ffcc00', 'Mauritanie': '#cc0000', 'Tchad': '#ffcc00',
+            'Gabon': '#003478', 'Congo-Brazzaville': '#ffcc00', 'RDC': '#003478',
+            'Mali': '#ffcc00', 'Djibouti': '#cc0000', 'Guinée': '#cc0000',
+            'Guinée (DGCMP)': '#cc0000', 'Guinée (ARMP)': '#cc0000',
+            'Guinée équatoriale': '#003478', 'Nigeria': '#008751', 'Kenya': '#000000',
+            'Cameroun': '#ffcc00', 'South Africa': '#000000', 'Ethiopia': '#ffcc00',
+            'Zambia': '#008751', 'Uganda': '#000000', 'Malawi': '#000000',
+            'Botswana': '#003478', 'Tanzania': '#000000', 'Sierra Leone': '#008751',
+            'Gambia': '#cc0000', 'Liberia': '#003478', 'Rwanda': '#008751',
+            'Mozambique': '#ffcc00', 'Maroc': '#cc0000', 'Angola': '#000000',
+            'Tunisie': '#cc0000', 'Ghana': '#ffcc00', 'Égypte': '#cc0000',
+            'Zimbabwe': '#008751', 'Cap Vert': '#003478', 'Lesotho': '#009543',
+            'UAE': '#00a041', 'Île Maurice': '#ff0000', 'Oman': '#cc0000',
+            'Seychelles': '#003478', 'Qatar': '#8b1c1c', 'Bahreïn': '#ffffff',
+            'Algérie': '#ffcc00', 'Indonésie': '#cc0000', 'Arabie Saoudite': '#006c35',
+            'Madagascar': '#cc0000', 'Singapour': '#cc0000', 'Thaïlande': '#cc0000',
+            'Comores': '#cc0000', 'AFD - France': '#003478', 'GIZ - Germany': '#000000',
+            'Norad - Norway': '#ba0c2f', 'Danida - Denmark': '#cc0000', 'SIDA - Sweden': '#006aa7',
+            'JICA - Japan': '#bc002d', 'World Bank': '#1f4788', 'AfDB': '#003d7a', 'ADB': '#0b4da2',
+            'Onoris Journal': '#333333', 'Global Tenders': '#0066cc', 'Africa Tenders': '#009543',
+            'Tender Soko': '#ffcc00', 'Development Aid': '#008751'
+        };
+
+        function getCountryDisplay(country) {
+            let flagHtml = '';
+            const cdnBase = './flags/';
+
+            if (COUNTRY_CODES[country]) {
+                // Pays avec code ISO
+                const code = COUNTRY_CODES[country];
+                flagHtml = '<img src="' + cdnBase + code + '.png" class="country-flag" alt="' + escapeHtml(country) + '">';
+            } else {
+                // Organisations: remplacer espaces par underscores
+                const cleanName = country.replace(/ /g, '_');
+                flagHtml = '<img src="' + cdnBase + encodeURIComponent(cleanName) + '.png" class="country-flag" alt="' + escapeHtml(country) + '">';
+            }
+
+            const nameHtml = '<div class="country-name">' + escapeHtml(country) + '</div>';
+            return '<div class="country-flag-container">' + flagHtml + '</div>' + nameHtml;
+        }
+
+        // ===== RENDU DU TABLEAU =====
+        function renderAlertsSummary() {
+            try {
+                const summaryBlock = document.getElementById('alertsSummary');
+                const summaryContent = document.getElementById('alertsSummaryContent');
+
+                // Collecter TOUTES les lignes du tableau qui ont une offre détectée
+                let html = '';
+                let countOffres = 0;
+
+                const allRows = document.querySelectorAll('.regions-wrapper tbody tr');
+                allRows.forEach(row => {
+                    const statusCell = row.querySelector('.status-cell');
+                    // Chercher "Offre" dans la cellule statut
+                    if (statusCell && statusCell.textContent.includes('Offre')) {
+                        // COPIER la ligne EXACTEMENT comme elle est
+                        html += row.outerHTML;
+                        countOffres++;
+                    }
+                });
+
+                if (countOffres === 0) {
+                    summaryBlock.style.display = 'none';
+                    return;
+                }
+
+                // Afficher le bloc
+                summaryBlock.style.display = 'block';
+                summaryContent.innerHTML = html;
+
+                // Ajouter le clic pour scroll
+                const rowsInSummary = summaryContent.querySelectorAll('tr');
+                rowsInSummary.forEach(row => {
+                    row.style.cursor = 'pointer';
+                    row.addEventListener('click', () => {
+                        const country = row.querySelector('.country-cell')?.textContent.trim() || '';
+                        scrollToCountryInTable(country);
+                    });
+                });
+
+            } catch (error) {
+                console.error('Erreur dans renderAlertsSummary:', error);
+            }
+        }
+
+        // Scroller vers le pays dans le tableau principal
+        function scrollToCountryInTable(country) {
+            if (!country) return;
+            const allRows = document.querySelectorAll('.regions-wrapper tbody tr');
+            for (const row of allRows) {
+                if (row.querySelector('.country-cell')?.textContent.includes(country)) {
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    row.style.backgroundColor = '#ffff99';
+                    setTimeout(() => { row.style.backgroundColor = ''; }, 2000);
+                    break;
+                }
+            }
+        }
+
+
+        function renderTable() {
+            const container = document.getElementById('regionsContainer');
+
+            // Grouper par région
+            const grouped = {};
+            sourcesData.forEach(source => {
+                const region = source.region;
+                if (!grouped[region]) {
+                    grouped[region] = [];
+                }
+                grouped[region].push(source);
+            });
+
+            let html = '';
+
+            Object.keys(grouped).forEach(region => {
+                const countries = grouped[region];
+
+                html += `
+                    <div class="region-section">
+                        <div class="region-title">${escapeHtml(region)}</div>
+                        <table>
+                            <colgroup>
+                                <col style="width: 280px;">
+                                <col style="width: 360px;">
+                                <col style="width: 100px;">
+                                <col style="width: 360px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Pays</th>
+                                    <th>Lien</th>
+                                    <th>Alerte</th>
+                                    <th>Mots-clés</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                countries.forEach(source => {
+                    const hasDetection = detectionsMap[source.country] && detectionsMap[source.country].length > 0;
+
+                    // Vérifier s'il y a une détection 404
+                    let statusHtml = '<span class="status-empty">−</span>';
+                    let detectedKeywords = [];
+                    if (hasDetection) {
+                        const detection = detectionsMap[source.country][0];
+                        const firstKeyword = detection.matched_keywords && detection.matched_keywords.length > 0 ? detection.matched_keywords[0] : '';
+                            detectedKeywords = detection.matched_keywords || [];
+                        if (detection.status === '404') {
+                            statusHtml = `<span class="status-inactive">Page inactive</span>`;
+                        } else {
+                            statusHtml = `<span class="status-alert">Offre</span>`;
+                        }
+                    }
+                    const stateBadge = sourceStateBadge(source.url);
+                    if (stateBadge) {
+                        statusHtml = hasDetection ? `${statusHtml}<br>${stateBadge}` : stateBadge;
+                    }
+
+                    const isUnavailable = !source.url || source.url.includes('indisponible') || source.url.includes('unavailable');
+                    const linkUrl = hasDetection && detectionsMap[source.country][0].status !== '404'
+                        ? highlightUrl(source.url, detectionsMap[source.country][0])
+                        : source.url;
+                    const urlHtml = isUnavailable
+                        ? '<span class="url-unavailable">URL indisponible</span>'
+                        : `<a href="${escapeHtml(safeUrl(source.url) === '#' ? '#' : linkUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.url)}</a>`;
+
+                    const rowClass = isUnavailable ? ' class="unavailable"' : '';
+
+                    const keywordsHtml = detectedKeywords && detectedKeywords.length > 0
+                        ? `<div class="keywords-display">${detectedKeywords.slice(0, 5).map(kw => `<span class="keyword-badge">${escapeHtml(kw)}</span>`).join('')}</div>`
+                        : '<span class="keywords-empty">−</span>';
+
+                    html += `
+                        <tr${rowClass}>
+                            <td class="country-cell">${getCountryDisplay(source.country)}</td>
+                            <td class="url-cell">${urlHtml}</td>
+                            <td class="status-cell">${statusHtml}</td>
+                            <td class="keywords-cell">${keywordsHtml}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passwordInput').focus();
+        });
+
+        // Auto-refresh toutes les 5 minutes
+        setInterval(() => {
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                loadData();
+            }
+        }, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+venv/
+.venv/
+
+# Écriture atomique de data.json interrompue
+docs/*.tmp
+
+# Secrets (ne jamais commiter)
+.env
+.env.*
+
+# Système
+.DS_Store
+desktop.ini
+Thumbs.db
+.vscode/
+.idea/
