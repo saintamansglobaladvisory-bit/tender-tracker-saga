@@ -1142,7 +1142,7 @@
 
         /* ===== À VÉRIFIER MANUELLEMENT ===== */
         .manual-check {
-            margin-bottom: 30px;
+            margin-top: 40px;
             border-color: #b26a00;
         }
 
@@ -1151,18 +1151,108 @@
             border-bottom-color: #b26a00;
         }
 
+        /* ===== SOURCES EN ÉCHEC (bas de la liste) ===== */
+        .failing-sources {
+            margin-top: 40px;
+            border-color: #8b1c1c;
+        }
+
+        .failing-sources .region-title {
+            background-color: #8b1c1c;
+            border-bottom-color: #8b1c1c;
+        }
+
         /* Le décalage de la 4e colonne ne concerne que les tableaux d'offres (colonne mots-clés) */
         .manual-check thead th:nth-child(4),
+        .failing-sources thead th:nth-child(4),
+        .history-table thead th:nth-child(4),
         .sources-table thead th:nth-child(4) {
             padding: 13.2px 16px !important;
             text-align: center !important;
         }
 
         .manual-check td,
+        .failing-sources td,
+        .history-table td,
         .sources-table td {
             padding: 12px 14px;
             font-size: 13.2px;
             vertical-align: middle;
+        }
+
+        /* Bouton « Modifier » à côté de chaque lien */
+        .link-edit {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 7px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            color: #333333;
+            background-color: #ffffff;
+            border: 1px solid #9e9e9e;
+            border-radius: 2px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .link-edit:hover {
+            border-color: #000000;
+            color: #000000;
+        }
+
+        .link-pending {
+            display: block;
+            margin-top: 4px;
+            font-size: 11.5px;
+            color: #1a5bb8;
+            word-break: normal;
+        }
+
+        /* ===== HISTORIQUE ===== */
+        .history-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 14px 17.6px 0;
+        }
+
+        .history-toolbar .kw-input {
+            flex: 1 1 260px;
+            max-width: 420px;
+        }
+
+        .history-count {
+            font-size: 13.2px;
+            color: #5f6368;
+        }
+
+        .history-table tbody tr {
+            height: auto;
+        }
+
+        .history-table .history-title {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #000000;
+        }
+
+        .history-table .country-flag-container {
+            width: 60px;
+            min-width: 60px;
+            max-width: 60px;
+        }
+
+        .history-table .country-flag {
+            width: 44px !important;
+            height: 33px !important;
+        }
+
+        .history-table .keyword-badge {
+            margin: 2px;
         }
 
         .manual-check a {
@@ -1574,35 +1664,13 @@
             <!-- Tabs -->
             <div class="tabs-container">
                 <button class="tab-button active" data-tab="alerts" onclick="switchTab('alerts')">Dernières Alertes</button>
+                <button class="tab-button" data-tab="history" onclick="switchTab('history')">Historique</button>
                 <button class="tab-button" data-tab="sources" onclick="switchTab('sources')">Sources</button>
                 <button class="tab-button" data-tab="keywords" onclick="switchTab('keywords')">Mots-clés</button>
             </div>
 
             <!-- Alertes Tab -->
             <div id="alerts-tab" class="tab-content active">
-                <!-- Sources bloquées ou en erreur de certificat : à consulter à la main -->
-                <div id="manualCheck" class="region-section manual-check" hidden>
-                    <div class="region-title">À vérifier manuellement</div>
-                    <p class="section-note">Le scraper ne peut pas lire ces sources (protection anti-robot ou certificat de sécurité invalide). Ouvrez-les pour vérifier les offres vous-même.</p>
-                    <table>
-                        <colgroup>
-                            <col style="width: 260px;">
-                            <col>
-                            <col style="width: 190px;">
-                            <col style="width: 150px;">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Source</th>
-                                <th>Problème</th>
-                                <th>Dernière lecture réussie</th>
-                                <th>Site</th>
-                            </tr>
-                        </thead>
-                        <tbody id="manualCheckContent"></tbody>
-                    </table>
-                </div>
-
                 <!-- Bloc Récapitulatif des Offres Détectées -->
                 <div id="alertsSummary" class="region-section" style="display: none; margin-bottom: 30px;">
                     <div class="region-title">OFFRES DETECTEES</div>
@@ -1632,13 +1700,100 @@
                 <div class="regions-wrapper" id="regionsContainer">
                     <p style="text-align: center; color: #80868b; padding: 40px 0; font-size: 14.3px;">Chargement des données...</p>
                 </div>
+
+                <!-- Sources en échec : sorties des listes par région -->
+                <div id="failingSources" class="region-section failing-sources" hidden>
+                    <div class="region-title">Sources en échec</div>
+                    <p class="section-note">Ces sources n'ont pas pu être lues lors de la dernière analyse (page introuvable, vide, injoignable ou trop lente). Elles reviennent dans leur région dès qu'une analyse les lit à nouveau.</p>
+                    <table>
+                        <colgroup>
+                            <col style="width: 260px;">
+                            <col>
+                            <col style="width: 220px;">
+                            <col style="width: 220px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Lien</th>
+                                <th>Problème</th>
+                                <th>Offre détectée</th>
+                            </tr>
+                        </thead>
+                        <tbody id="failingSourcesContent"></tbody>
+                    </table>
+                </div>
+
+                <!-- Sources bloquées ou en erreur de certificat : à consulter à la main -->
+                <div id="manualCheck" class="region-section manual-check" hidden>
+                    <div class="region-title">À vérifier manuellement</div>
+                    <p class="section-note">Le scraper ne peut pas lire ces sources (protection anti-robot ou certificat de sécurité invalide). Ouvrez-les pour vérifier les offres vous-même.</p>
+                    <table>
+                        <colgroup>
+                            <col style="width: 260px;">
+                            <col>
+                            <col style="width: 190px;">
+                            <col style="width: 150px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Problème</th>
+                                <th>Dernière lecture réussie</th>
+                                <th>Site</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manualCheckContent"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Historique Tab -->
+            <div id="history-tab" class="tab-content">
+                <div class="region-section">
+                    <div class="region-title">Historique des offres détectées</div>
+                    <div class="history-toolbar">
+                        <label class="visually-hidden" for="historyStatus">Statut</label>
+                        <select id="historyStatus" class="kw-select" onchange="renderHistory()">
+                            <option value="all">Toutes les offres</option>
+                            <option value="active">Actives</option>
+                            <option value="expired">Expirées</option>
+                            <option value="dismissed">Écartées</option>
+                        </select>
+                        <label class="visually-hidden" for="historySearch">Rechercher</label>
+                        <input id="historySearch" class="kw-input" type="search" placeholder="Rechercher (pays, titre, mot-clé)" autocomplete="off" oninput="renderHistory()">
+                        <span class="history-count" id="historyCount"></span>
+                    </div>
+                    <p class="section-note">Toutes les offres détectées depuis la mise en service. Une offre est « expirée » quand elle n'apparaît plus sur le site source, « écartée » quand elle a été retirée du dashboard. Les offres expirées sont conservées 180 jours.</p>
+                    <table class="history-table">
+                        <colgroup>
+                            <col style="width: 120px;">
+                            <col style="width: 220px;">
+                            <col>
+                            <col style="width: 220px;">
+                            <col style="width: 110px;">
+                            <col style="width: 120px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Détectée le</th>
+                                <th>Source</th>
+                                <th>Offre</th>
+                                <th>Mots-clés</th>
+                                <th>Statut</th>
+                                <th>Vue le</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyContent"></tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Sources Tab -->
             <div id="sources-tab" class="tab-content">
                 <div class="region-section">
                     <div class="region-title">Toutes les sources</div>
-                    <p class="section-note">Une source introuvable, vide, injoignable ou trop lente depuis plus de 3 jours peut être corrigée avec le bouton « Modifier ». La nouvelle adresse est prise en compte à la prochaine analyse.</p>
+                    <p class="section-note">Chaque adresse peut être corrigée avec le bouton « Modifier » (ici ou à côté du lien dans la liste des offres). La nouvelle adresse est prise en compte à la prochaine analyse.</p>
                     <table class="sources-table">
                         <colgroup>
                             <col style="width: 250px;">
@@ -1788,10 +1943,12 @@
                 return;
             }
             const failing = entries.filter(s => s.state !== 'ok');
-            const persistent = failing.filter(s => (s.consecutive_failures || 0) >= PERSISTENT_FAILURE_RUNS);
+            const manual = failing.filter(needsManualCheck);
             const checked = entries.map(s => s.checked_at).filter(Boolean).sort().pop();
             container.textContent = `${entries.length - failing.length} / ${entries.length} sources analysées le ${formatDate(checked)}`
-                + (failing.length ? ` · ${failing.length} en échec, dont ${persistent.length} depuis ${PERSISTENT_FAILURE_RUNS} runs ou plus (survolez les badges pour le détail)` : '');
+                + (failing.length - manual.length ? ` · ${failing.length - manual.length} en échec` : '')
+                + (manual.length ? ` · ${manual.length} à vérifier manuellement` : '')
+                + (failing.length ? ' (en bas de page)' : '');
         }
         // ===== ONGLETS =====
         function switchTab(tabName) {
@@ -1802,6 +1959,7 @@
                 btn.classList.toggle('active', btn.dataset.tab === tabName);
             });
             if (tabName === 'sources') loadSourcesConfig();
+            if (tabName === 'history') renderHistory();
             if (tabName === 'keywords' && !keywordsState.loaded) loadKeywords();
         }
 
@@ -1895,6 +2053,7 @@
                 showDashboard();
                 applyData(data);
                 resumeScanTracking();
+                loadSourcesConfig();
             } catch (error) {
                 console.error('Erreur de connexion:', error);
                 showLoginError('Impossible de charger les données. Vérifiez votre connexion et réessayez.');
@@ -1956,11 +2115,11 @@
                 }
             });
 
-            renderTable();
-            renderAlertsSummary();
+            renderSourceLists();
             renderSourcesHealth();
             renderManualCheck();
             renderSourcesTab();
+            renderHistory();
             if (!scanTracking) renderScanIdle();
         }
 
@@ -2521,9 +2680,7 @@
         // ===== SOURCES (scripts/sources.json) =====
         // Adresses à jour, y compris celles modifiées depuis la dernière analyse
         let sourcesConfig = null;
-        const BROKEN_STATES = new Set(['not_found', 'empty', 'timeout', 'unreachable']);
         const CERT_ERROR_RE = /ERR_CERT|SSL|certificat/i;
-        const EDIT_AFTER_DAYS = 3;
         const DAY_MS = 24 * 3600 * 1000;
 
         // Bloquée par une protection anti-robot ou par un certificat : à consulter à la main
@@ -2541,10 +2698,31 @@
             return null;
         }
 
-        function isEditable(status) {
-            if (!status || needsManualCheck(status) || !BROKEN_STATES.has(status.state)) return false;
-            const since = failingSince(status);
-            return Boolean(since) && Date.now() - since >= EDIT_AFTER_DAYS * DAY_MS;
+        // Source lue mais en échec (hors protection anti-robot et certificat, affichées en haut)
+        function isFailing(source) {
+            const status = sourceStatus[source.url];
+            return Boolean(status) && status.state !== 'ok' && !needsManualCheck(status);
+        }
+
+        // Entrée de scripts/sources.json correspondant à une source de la dernière analyse
+        // (même pays si l'adresse a été modifiée depuis)
+        function configEntryFor(source) {
+            if (!sourcesConfig) return null;
+            return sourcesConfig.find(s => s.url === source.url)
+                || sourcesConfig.find(s => s.country === source.country && !sourcesData.some(d => d.url === s.url))
+                || null;
+        }
+
+        function editLinkButton(url) {
+            return `<button type="button" class="link-edit" data-url="${escapeHtml(url)}" `
+                + `onclick="event.stopPropagation(); openSourceModal(this.dataset.url)" title="Modifier l'adresse de cette source">Modifier</button>`;
+        }
+
+        // Adresse modifiée depuis le dashboard, pas encore analysée
+        function pendingLinkHtml(source) {
+            const entry = configEntryFor(source);
+            if (!entry || entry.url === source.url) return '';
+            return `<span class="link-pending">Nouvelle adresse enregistrée, prise en compte à la prochaine analyse : ${escapeHtml(entry.url)}</span>`;
         }
 
         async function loadSourcesConfig() {
@@ -2553,6 +2731,7 @@
                 if (file.status === 200) {
                     sourcesConfig = JSON.parse(file.text);
                     renderSourcesTab();
+                    renderSourceLists();
                 }
             } catch (error) {
                 console.warn('sources.json indisponible :', error.message);
@@ -2582,7 +2761,7 @@
             document.getElementById('sourcesContent').innerHTML = list.map(source => {
                 const status = sourceStatus[source.url];
                 let stateHtml;
-                let action = '';
+                const action = `<button type="button" class="secondary-button" data-url="${escapeHtml(source.url)}" onclick="openSourceModal(this.dataset.url)">Modifier</button>`;
                 if (!scannedUrls.has(source.url)) {
                     stateHtml = '<span class="pill pending">Nouvelle adresse : prise en compte à la prochaine analyse</span>';
                 } else if (!status) {
@@ -2595,9 +2774,6 @@
                     const label = needsManualCheck(status) ? 'À vérifier manuellement' : status.label;
                     stateHtml = `<span class="pill ${kind}" title="${escapeHtml(status.detail || '')}">${escapeHtml(label)}</span>`
                         + (since ? `<span class="pill-note">depuis le ${escapeHtml(since.toLocaleDateString('fr-FR'))}</span>` : '');
-                    if (isEditable(status)) {
-                        action = `<button type="button" class="secondary-button" data-url="${escapeHtml(source.url)}" onclick="openSourceModal(this.dataset.url)">Modifier</button>`;
-                    }
                 }
                 return `
                     <tr>
@@ -2612,12 +2788,19 @@
 
         let editedSourceUrl = null;
 
-        function openSourceModal(url) {
-            const source = (sourcesConfig || sourcesData).find(s => s.url === url);
-            if (!source) return;
-            editedSourceUrl = url;
+        async function openSourceModal(url) {
+            // Toujours partir de la liste à jour : l'adresse a pu changer depuis la dernière analyse
+            await loadSourcesConfig();
+            const scanned = sourcesData.find(s => s.url === url);
+            const source = (sourcesConfig || sourcesData).find(s => s.url === url)
+                || (scanned && configEntryFor(scanned));
+            if (!source) {
+                alert('Source introuvable dans la liste à jour. Rechargez la page.');
+                return;
+            }
+            editedSourceUrl = source.url;
             document.getElementById('sourceModalName').textContent = source.country;
-            document.getElementById('sourceCurrentUrl').value = url;
+            document.getElementById('sourceCurrentUrl').value = source.url;
             document.getElementById('sourceNewUrl').value = '';
             setMessage('sourceModalMessage', '');
             document.getElementById('sourceModal').hidden = false;
@@ -2663,6 +2846,7 @@
             sourcesConfig = JSON.parse(result.text);
             closeSourceModal();
             renderSourcesTab();
+            renderSourceLists();
         }
 
         document.addEventListener('keydown', event => {
@@ -2740,56 +2924,85 @@
         }
 
         // ===== RENDU DU TABLEAU =====
-        function renderAlertsSummary() {
-            try {
-                const summaryBlock = document.getElementById('alertsSummary');
-                const summaryContent = document.getElementById('alertsSummaryContent');
-
-                // Collecter TOUTES les lignes du tableau qui ont une offre détectée
-                let html = '';
-                let countOffres = 0;
-
-                const allRows = document.querySelectorAll('.regions-wrapper tbody tr');
-                allRows.forEach(row => {
-                    const statusCell = row.querySelector('.status-cell');
-                    // Chercher "Offre" dans la cellule statut
-                    if (statusCell && statusCell.textContent.includes('Offre')) {
-                        // COPIER la ligne EXACTEMENT comme elle est
-                        html += row.outerHTML;
-                        countOffres++;
-                    }
-                });
-
-                if (countOffres === 0) {
-                    summaryBlock.style.display = 'none';
-                    return;
-                }
-
-                // Afficher le bloc
-                summaryBlock.style.display = 'block';
-                summaryContent.innerHTML = html;
-
-                // Ajouter le clic pour scroll
-                const rowsInSummary = summaryContent.querySelectorAll('tr');
-                rowsInSummary.forEach(row => {
-                    row.style.cursor = 'pointer';
-                    row.addEventListener('click', () => {
-                        const country = row.querySelector('.country-cell')?.textContent.trim() || '';
-                        scrollToCountryInTable(country);
-                    });
-                });
-
-            } catch (error) {
-                console.error('Erreur dans renderAlertsSummary:', error);
-            }
+        // Une ligne « source » : pays, lien (modifiable), alerte, mots-clés
+        function detectionFor(source) {
+            const list = detectionsMap[source.country];
+            return list && list.length ? list[0] : null;
         }
 
-        // Scroller vers le pays dans le tableau principal
+        function linkCellHtml(source, detection) {
+            const isUnavailable = !source.url || source.url.includes('indisponible') || source.url.includes('unavailable');
+            if (isUnavailable) return '<span class="url-unavailable">URL indisponible</span>' + editLinkButton(source.url);
+            const linkUrl = detection && detection.status !== '404' ? highlightUrl(source.url, detection) : source.url;
+            return `<a href="${escapeHtml(safeUrl(source.url) === '#' ? '#' : linkUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.url)}</a>`
+                + editLinkButton(source.url) + pendingLinkHtml(source);
+        }
+
+        function keywordsHtml(keywords) {
+            return keywords && keywords.length
+                ? `<div class="keywords-display">${keywords.slice(0, 5).map(kw => `<span class="keyword-badge">${escapeHtml(kw)}</span>`).join('')}</div>`
+                : '<span class="keywords-empty">−</span>';
+        }
+
+        function sourceRowHtml(source) {
+            const detection = detectionFor(source);
+            let statusHtml = '<span class="status-empty">−</span>';
+            if (detection) {
+                statusHtml = detection.status === '404'
+                    ? '<span class="status-inactive">Page inactive</span>'
+                    : '<span class="status-alert">Offre</span>';
+            }
+            const stateBadge = sourceStateBadge(source.url);
+            if (stateBadge) {
+                statusHtml = detection ? `${statusHtml}<br>${stateBadge}` : stateBadge;
+            }
+            const isUnavailable = !source.url || source.url.includes('indisponible') || source.url.includes('unavailable');
+            return `
+                <tr${isUnavailable ? ' class="unavailable"' : ''}>
+                    <td class="country-cell">${getCountryDisplay(source.country)}</td>
+                    <td class="url-cell">${linkCellHtml(source, detection)}</td>
+                    <td class="status-cell">${statusHtml}</td>
+                    <td class="keywords-cell">${keywordsHtml(detection ? detection.matched_keywords : [])}</td>
+                </tr>`;
+        }
+
+        function renderSourceLists() {
+            renderTable();
+            renderFailingSources();
+            renderAlertsSummary();
+        }
+
+        // Récapitulatif : toutes les sources avec une offre, y compris celles en échec
+        function renderAlertsSummary() {
+            const summaryBlock = document.getElementById('alertsSummary');
+            const summaryContent = document.getElementById('alertsSummaryContent');
+            const withOffer = sourcesData.filter(source => {
+                const detection = detectionFor(source);
+                return detection && detection.status !== '404';
+            });
+            if (!withOffer.length) {
+                summaryBlock.style.display = 'none';
+                summaryContent.innerHTML = '';
+                return;
+            }
+            summaryBlock.style.display = 'block';
+            summaryContent.innerHTML = withOffer.map(sourceRowHtml).join('');
+            summaryContent.querySelectorAll('tr').forEach(row => {
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', event => {
+                    if (event.target.closest('a, button')) return;
+                    const country = row.querySelector('.country-cell')?.textContent.trim() || '';
+                    scrollToCountryInTable(country);
+                });
+            });
+        }
+
+        // Scroller vers le pays dans la liste par région ou dans les sources en échec
         function scrollToCountryInTable(country) {
             if (!country) return;
-            const allRows = document.querySelectorAll('.regions-wrapper tbody tr');
+            const allRows = document.querySelectorAll('.regions-wrapper tbody tr, #failingSources tbody tr');
             for (const row of allRows) {
-                if (row.querySelector('.country-cell')?.textContent.includes(country)) {
+                if (row.querySelector('.country-cell')?.textContent.trim() === country) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     row.style.backgroundColor = '#ffff99';
                     setTimeout(() => { row.style.backgroundColor = ''; }, 2000);
@@ -2798,99 +3011,105 @@
             }
         }
 
-
+        // Liste par région : les sources en échec n'y figurent pas (elles sont en bas de page)
         function renderTable() {
             const container = document.getElementById('regionsContainer');
-
-            // Grouper par région
             const grouped = {};
             sourcesData.forEach(source => {
-                const region = source.region;
-                if (!grouped[region]) {
-                    grouped[region] = [];
-                }
-                grouped[region].push(source);
+                if (isFailing(source) || needsManualCheck(sourceStatus[source.url])) return;
+                (grouped[source.region] = grouped[source.region] || []).push(source);
             });
 
-            let html = '';
+            container.innerHTML = Object.entries(grouped).map(([region, sources]) => `
+                <div class="region-section">
+                    <div class="region-title">${escapeHtml(region)}</div>
+                    <table>
+                        <colgroup>
+                            <col style="width: 280px;">
+                            <col style="width: 360px;">
+                            <col style="width: 100px;">
+                            <col style="width: 360px;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Pays</th>
+                                <th>Lien</th>
+                                <th>Alerte</th>
+                                <th>Mots-clés</th>
+                            </tr>
+                        </thead>
+                        <tbody>${sources.map(sourceRowHtml).join('')}</tbody>
+                    </table>
+                </div>`).join('');
+        }
 
-            Object.keys(grouped).forEach(region => {
-                const countries = grouped[region];
+        // Encart du bas : sources introuvables, vides, injoignables ou trop lentes
+        function renderFailingSources() {
+            const block = document.getElementById('failingSources');
+            const failing = sourcesData.filter(isFailing);
+            block.hidden = failing.length === 0;
+            document.getElementById('failingSourcesContent').innerHTML = failing.map(source => {
+                const status = sourceStatus[source.url];
+                const since = failingSince(status);
+                const detection = detectionFor(source);
+                const offer = detection && detection.status !== '404'
+                    ? `<span class="pill ok">Offre</span>${keywordsHtml(detection.matched_keywords)}`
+                    : '<span class="keywords-empty">−</span>';
+                return `
+                    <tr>
+                        <td class="country-cell">${getCountryDisplay(source.country)}</td>
+                        <td class="url-cell">${linkCellHtml(source, detection)}</td>
+                        <td>
+                            <span class="pill broken" title="${escapeHtml(status.detail || '')}">${escapeHtml(status.label || status.state)}</span>
+                            ${since ? `<span class="pill-note">depuis le ${escapeHtml(since.toLocaleDateString('fr-FR'))}</span>` : ''}
+                            <span class="pill-note">Dernière lecture réussie : ${escapeHtml(formatDate(status.last_ok))}</span>
+                        </td>
+                        <td>${offer}</td>
+                    </tr>`;
+            }).join('');
+        }
 
-                html += `
-                    <div class="region-section">
-                        <div class="region-title">${escapeHtml(region)}</div>
-                        <table>
-                            <colgroup>
-                                <col style="width: 280px;">
-                                <col style="width: 360px;">
-                                <col style="width: 100px;">
-                                <col style="width: 360px;">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Pays</th>
-                                    <th>Lien</th>
-                                    <th>Alerte</th>
-                                    <th>Mots-clés</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
+        // ===== HISTORIQUE DES OFFRES =====
+        const HISTORY_STATUS = {
+            active: { label: 'Active', pill: 'ok' },
+            expired: { label: 'Expirée', pill: '' },
+            dismissed: { label: 'Écartée', pill: 'manual' }
+        };
 
-                countries.forEach(source => {
-                    const hasDetection = detectionsMap[source.country] && detectionsMap[source.country].length > 0;
+        function historyEntries() {
+            const entries = currentData && Array.isArray(currentData.history) ? currentData.history
+                : (currentData && Array.isArray(currentData.tenders) ? currentData.tenders : []);
+            return [...entries].sort((a, b) => String(b.first_seen || b.detected_at || '')
+                .localeCompare(String(a.first_seen || a.detected_at || '')));
+        }
 
-                    // Vérifier s'il y a une détection 404
-                    let statusHtml = '<span class="status-empty">−</span>';
-                    let detectedKeywords = [];
-                    if (hasDetection) {
-                        const detection = detectionsMap[source.country][0];
-                        const firstKeyword = detection.matched_keywords && detection.matched_keywords.length > 0 ? detection.matched_keywords[0] : '';
-                            detectedKeywords = detection.matched_keywords || [];
-                        if (detection.status === '404') {
-                            statusHtml = `<span class="status-inactive">Page inactive</span>`;
-                        } else {
-                            statusHtml = `<span class="status-alert">Offre</span>`;
-                        }
-                    }
-                    const stateBadge = sourceStateBadge(source.url);
-                    if (stateBadge) {
-                        statusHtml = hasDetection ? `${statusHtml}<br>${stateBadge}` : stateBadge;
-                    }
+        function formatDay(iso) {
+            return iso ? new Date(iso).toLocaleDateString('fr-FR') : '—';
+        }
 
-                    const isUnavailable = !source.url || source.url.includes('indisponible') || source.url.includes('unavailable');
-                    const linkUrl = hasDetection && detectionsMap[source.country][0].status !== '404'
-                        ? highlightUrl(source.url, detectionsMap[source.country][0])
-                        : source.url;
-                    const urlHtml = isUnavailable
-                        ? '<span class="url-unavailable">URL indisponible</span>'
-                        : `<a href="${escapeHtml(safeUrl(source.url) === '#' ? '#' : linkUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.url)}</a>`;
-
-                    const rowClass = isUnavailable ? ' class="unavailable"' : '';
-
-                    const keywordsHtml = detectedKeywords && detectedKeywords.length > 0
-                        ? `<div class="keywords-display">${detectedKeywords.slice(0, 5).map(kw => `<span class="keyword-badge">${escapeHtml(kw)}</span>`).join('')}</div>`
-                        : '<span class="keywords-empty">−</span>';
-
-                    html += `
-                        <tr${rowClass}>
-                            <td class="country-cell">${getCountryDisplay(source.country)}</td>
-                            <td class="url-cell">${urlHtml}</td>
-                            <td class="status-cell">${statusHtml}</td>
-                            <td class="keywords-cell">${keywordsHtml}</td>
-                        </tr>
-                    `;
-                });
-
-                html += `
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
+        function renderHistory() {
+            const all = historyEntries();
+            const status = document.getElementById('historyStatus').value;
+            const query = stripAccents(document.getElementById('historySearch').value.trim());
+            const rows = all.filter(entry => (status === 'all' || (entry.status || 'active') === status)
+                && (!query || stripAccents([entry.country, entry.title, ...(entry.matched_keywords || [])].join(' ')).includes(query)));
+            document.getElementById('historyCount').textContent = rows.length === all.length
+                ? `${all.length} offre(s)` : `${rows.length} sur ${all.length} offre(s)`;
+            document.getElementById('historyContent').innerHTML = rows.length ? rows.map(entry => {
+                const info = HISTORY_STATUS[entry.status || 'active'] || { label: entry.status, pill: '' };
+                const url = safeUrl(entry.url || entry.source_url);
+                const href = url !== '#' && entry.url === entry.source_url ? highlightUrl(url, entry) : url;
+                const title = (entry.title || '').replace(/ \| /g, ' · ');
+                return `
+                    <tr>
+                        <td>${escapeHtml(formatDay(entry.first_seen || entry.detected_at))}</td>
+                        <td class="country-cell">${getCountryDisplay(entry.country || '')}</td>
+                        <td><a class="history-title" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(title)}">${escapeHtml(title || 'Voir l’offre')}</a></td>
+                        <td>${keywordsHtml(entry.matched_keywords)}</td>
+                        <td><span class="pill ${info.pill}">${escapeHtml(info.label)}</span></td>
+                        <td>${escapeHtml(formatDay(entry.last_seen))}</td>
+                    </tr>`;
+            }).join('') : `<tr><td colspan="6" class="section-note">${all.length ? 'Aucune offre ne correspond à ce filtre.' : 'Aucune offre détectée pour l’instant.'}</td></tr>`;
         }
 
         // Initialisation
