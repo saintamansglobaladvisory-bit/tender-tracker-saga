@@ -1002,7 +1002,7 @@
         .scan-launch:focus-visible,
         .primary-button:focus-visible,
         .secondary-button:focus-visible,
-        .kw-remove:focus-visible {
+        .github-link:focus-visible {
             outline: 3px solid #1a73e8;
             outline-offset: 2px;
         }
@@ -1180,27 +1180,6 @@
             vertical-align: middle;
         }
 
-        /* Bouton « Modifier » à côté de chaque lien */
-        .link-edit {
-            display: inline-block;
-            margin-left: 8px;
-            padding: 2px 7px;
-            font-family: inherit;
-            font-size: 11px;
-            font-weight: 600;
-            color: #333333;
-            background-color: #ffffff;
-            border: 1px solid #9e9e9e;
-            border-radius: 2px;
-            cursor: pointer;
-            vertical-align: middle;
-        }
-
-        .link-edit:hover {
-            border-color: #000000;
-            color: #000000;
-        }
-
         .link-pending {
             display: block;
             margin-top: 4px;
@@ -1318,6 +1297,39 @@
             margin-bottom: 12px;
         }
 
+        .github-link {
+            display: inline-block;
+            padding: 8px 14px;
+            font-size: 12.1px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: #000000;
+            background-color: #ffffff;
+            border: 1px solid #333333;
+            border-radius: 2px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .github-link:hover {
+            background-color: #f2f2f2;
+        }
+
+        .region-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 14px 17.6px;
+        }
+
+        .region-toolbar .section-note {
+            padding: 0;
+            flex: 1 1 420px;
+        }
+
         .keywords-actions {
             display: flex;
             align-items: center;
@@ -1385,11 +1397,6 @@
             margin-bottom: 0;
         }
 
-        .kw-add {
-            display: flex;
-            gap: 8px;
-        }
-
         .kw-input {
             flex: 1;
             min-width: 0;
@@ -1421,91 +1428,6 @@
             border: 1px solid #dadce0;
             border-radius: 2px;
             background-color: #fafafa;
-        }
-
-        .kw-chip.added {
-            border-color: #2e7d32;
-            background-color: #e8f5e9;
-        }
-
-        .kw-remove {
-            width: 20px;
-            height: 20px;
-            font-size: 15px;
-            line-height: 1;
-            color: #5f6368;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .kw-remove:hover {
-            color: #d32f2f;
-        }
-
-        /* ===== FENÊTRE DE MODIFICATION ===== */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            background-color: rgba(0, 0, 0, 0.45);
-        }
-
-        .modal {
-            width: 100%;
-            max-width: 560px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 24px;
-            background-color: #ffffff;
-            border: 2px solid #333333;
-        }
-
-        .modal-title {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .modal-label {
-            font-size: 12.1px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            color: #202124;
-        }
-
-        .modal-input {
-            padding: 10px 12px;
-            font-family: inherit;
-            font-size: 14px;
-            border: 1px solid #dadce0;
-            border-radius: 2px;
-        }
-
-        .modal-input[readonly] {
-            color: #5f6368;
-            background-color: #f5f5f5;
-        }
-
-        .modal-warning {
-            font-size: 12.6px;
-            color: #8a5200;
-            background-color: #fff4e0;
-            border-left: 3px solid #b26a00;
-            padding: 8px 10px;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 6px;
         }
 
         @media (max-width: 768px) {
@@ -1653,7 +1575,7 @@
 
             <!-- Lancement manuel de l'analyse (workflow GitHub) -->
             <div class="scan-panel" id="scanPanel">
-                <button type="button" class="scan-launch" id="scanLaunch" onclick="launchScan()">Lancer l'analyse</button>
+                <button type="button" class="scan-launch" id="scanLaunch" onclick="launchScan()" title="Ouvre GitHub : cliquez ensuite sur « Run workflow »">Lancer l'analyse</button>
                 <div class="scan-progress">
                     <div class="scan-headline" id="scanHeadline">Dernière analyse : —</div>
                     <ol class="scan-steps" id="scanSteps" hidden></ol>
@@ -1704,7 +1626,7 @@
                 <!-- Sources en échec : sorties des listes par région -->
                 <div id="failingSources" class="region-section failing-sources" hidden>
                     <div class="region-title">Sources en échec</div>
-                    <p class="section-note">Ces sources n'ont pas pu être lues lors de la dernière analyse (page introuvable, vide, injoignable ou trop lente). Elles reviennent dans leur région dès qu'une analyse les lit à nouveau.</p>
+                    <p class="section-note">Ces sources n'ont pas pu être lues lors de la dernière analyse (page introuvable, vide, injoignable ou trop lente). Elles reviennent dans leur région dès qu'une analyse les lit à nouveau. Pour corriger une adresse : onglet Sources, « Modifier sur GitHub ».</p>
                     <table>
                         <colgroup>
                             <col style="width: 260px;">
@@ -1793,14 +1715,16 @@
             <div id="sources-tab" class="tab-content">
                 <div class="region-section">
                     <div class="region-title">Toutes les sources</div>
-                    <p class="section-note">Chaque adresse peut être corrigée avec le bouton « Modifier » (ici ou à côté du lien dans la liste des offres). La nouvelle adresse est prise en compte à la prochaine analyse.</p>
+                    <div class="region-toolbar">
+                        <p class="section-note">Pour corriger une adresse, ouvrez le fichier sur GitHub (connecté au compte du dépôt), modifiez la ligne <code>"url"</code> de la source, puis « Commit changes ». La nouvelle adresse est prise en compte à la prochaine analyse.</p>
+                        <a class="github-link" id="sourcesEditLink" href="#" target="_blank" rel="noopener noreferrer">Modifier sur GitHub</a>
+                    </div>
                     <table class="sources-table">
                         <colgroup>
                             <col style="width: 250px;">
                             <col style="width: 150px;">
                             <col>
-                            <col style="width: 190px;">
-                            <col style="width: 120px;">
+                            <col style="width: 220px;">
                         </colgroup>
                         <thead>
                             <tr>
@@ -1808,7 +1732,6 @@
                                 <th>Région</th>
                                 <th>Adresse</th>
                                 <th>État</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="sourcesContent"></tbody>
@@ -1821,16 +1744,13 @@
                 <div class="keywords-section">
                     <div class="keywords-toolbar">
                         <div class="section-note">
-                            <p>Ce sont les mots-clés réellement utilisés par le scraper. Les modifications sont prises en compte à la prochaine analyse.</p>
+                            <p>Ce sont les mots-clés réellement utilisés par le scraper. Pour les modifier, ouvrez le fichier sur GitHub (connecté au compte du dépôt), ajoutez ou retirez des mots entre guillemets, puis « Commit changes ». Ils sont pris en compte à la prochaine analyse.</p>
                             <p><strong>Fort</strong> : thème précis, un seul suffit pour retenir une offre (sauf achat de fournitures ou de travaux). <strong>Faible</strong> : thème large, retenu seulement si l'offre porte aussi sur une prestation de service (consultant, assistance technique, étude…).</p>
                         </div>
                         <div class="keywords-actions">
-                            <span class="keywords-pending" id="keywordsPending"></span>
-                            <button type="button" class="secondary-button" id="keywordsCancel" onclick="cancelKeywordChanges()" disabled>Annuler</button>
-                            <button type="button" class="primary-button" id="keywordsSave" onclick="saveKeywords()" disabled>Enregistrer</button>
+                            <a class="github-link" id="keywordsEditLink" href="#" target="_blank" rel="noopener noreferrer">Modifier sur GitHub</a>
                         </div>
                     </div>
-                    <div class="form-message" id="keywordsMessage" role="status"></div>
                     <div id="keywordsList" class="keywords-editor">
                         <p class="section-note">Chargement des mots-clés…</p>
                     </div>
@@ -1842,23 +1762,6 @@
                 <p>Tender-Tracker SAGA © 2026 | Veille Automatisée 24/7</p>
             </div>
         </div>
-    </div>
-
-    <!-- Modification d'une source -->
-    <div class="modal-backdrop" id="sourceModal" hidden>
-        <form class="modal" id="sourceForm" onsubmit="saveSourceEdit(event)">
-            <h3 class="modal-title">Modifier la source <span id="sourceModalName"></span></h3>
-            <label class="modal-label" for="sourceCurrentUrl">Adresse actuelle</label>
-            <input id="sourceCurrentUrl" class="modal-input" type="text" readonly>
-            <label class="modal-label" for="sourceNewUrl">Nouvelle adresse</label>
-            <input id="sourceNewUrl" class="modal-input" type="url" placeholder="https://" required autocomplete="off">
-            <p class="modal-warning">Les offres de cette source repartent de zéro avec la nouvelle adresse : elles seront signalées comme nouvelles à la prochaine analyse.</p>
-            <div class="form-message" id="sourceModalMessage" role="status"></div>
-            <div class="modal-actions">
-                <button type="button" class="secondary-button" onclick="closeSourceModal()">Annuler</button>
-                <button type="submit" class="primary-button" id="sourceModalSave">Enregistrer</button>
-            </div>
-        </form>
     </div>
 
     <script>
@@ -1876,7 +1779,6 @@
         const API_ROOT = `https://api.github.com/repos/${REPO}`;
         const WORKFLOW_FILE = 'scraper.yml';
         const ENCRYPTION_FORMAT = 'tt-enc-v1';
-        const KDF_ITERATIONS = 600000;
         const keyCache = new Map();
 
         let sourcesData = [];
@@ -2001,18 +1903,6 @@
             return JSON.parse(new TextDecoder().decode(plain));
         }
 
-        async function encryptData(data, password) {
-            const salt = crypto.getRandomValues(new Uint8Array(16));
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const key = await deriveKey(password, salt, KDF_ITERATIONS);
-            const ciphertext = new Uint8Array(await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(data))));
-            return {
-                format: ENCRYPTION_FORMAT, kdf: 'PBKDF2-SHA256', iterations: KDF_ITERATIONS,
-                salt: base64FromBytes(salt), iv: base64FromBytes(iv), ciphertext: base64FromBytes(ciphertext)
-            };
-        }
-
         // ===== AUTHENTIFICATION =====
         function showLoginError(message) {
             const errorMessage = document.getElementById('errorMessage');
@@ -2123,72 +2013,37 @@
             if (!scanTracking) renderScanIdle();
         }
 
-        // ===== TOKEN ET API GITHUB =====
-        const TOKEN_HELP = "Token GitHub requis (une seule fois sur cet ordinateur).\n\n"
-            + "Créez un token « fine-grained » sur https://github.com/settings/personal-access-tokens/new :\n"
-            + `- Repository access : uniquement ${REPO}\n`
-            + "- Permissions : Contents et Actions en « Read and write »\n\n"
-            + "Collez-le ici :";
+        // ===== API GITHUB (lecture seule, sans token : le dépôt est public) =====
+        // Les modifications (analyse, sources, mots-clés) se font directement sur GitHub
+        const GITHUB_REPO_URL = `https://github.com/${REPO}`;
+        const WORKFLOW_PAGE_URL = `${GITHUB_REPO_URL}/actions/workflows/${WORKFLOW_FILE}`;
+        const editFileUrl = path => `${GITHUB_REPO_URL}/edit/main/${path}`;
 
-        function savedToken() {
-            try {
-                return localStorage.getItem('githubToken');
-            } catch (error) {
-                return null;
-            }
+        // Token enregistré par une ancienne version du dashboard : il n'est plus utilisé
+        try {
+            localStorage.removeItem('githubToken');
+        } catch (error) {
+            // stockage indisponible
         }
 
-        function getToken() {
-            const saved = savedToken();
-            if (saved) return saved;
-            const entered = (prompt(TOKEN_HELP) || '').trim();
-            if (!entered) return null;
-            try {
-                localStorage.setItem('githubToken', entered);
-            } catch (error) {
-                // Stockage indisponible : le token ne vaut que pour cette action
-            }
-            return entered;
+        function apiHeaders(accept = 'application/vnd.github+json') {
+            return { 'Accept': accept, 'X-GitHub-Api-Version': '2022-11-28' };
         }
 
-        function forgetToken() {
-            try {
-                localStorage.removeItem('githubToken');
-            } catch (error) {
-                // rien à effacer
-            }
-        }
-
-        function apiHeaders(token, accept = 'application/vnd.github+json') {
-            const headers = { 'Accept': accept, 'X-GitHub-Api-Version': '2022-11-28' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-            return headers;
-        }
-
-        function apiErrorMessage(status, action) {
-            if (status === 401) {
-                forgetToken();
-                return 'Token refusé par GitHub (expiré ou invalide). Un nouveau token vous sera demandé au prochain essai.';
-            }
-            if (status === 403 || status === 404) {
-                return `Le token n'a pas le droit de ${action}. Vérifiez ses permissions : Contents et Actions en « Read and write » sur ce dépôt.`;
+        function apiErrorMessage(status) {
+            if (status === 403 || status === 429) {
+                return 'Limite de consultations GitHub atteinte pour cette heure. Réessayez plus tard.';
             }
             return `Erreur GitHub (HTTP ${status}).`;
         }
-
-        const UPDATE_ATTEMPTS = 3;
 
         function base64ToUtf8(b64) {
             return new TextDecoder().decode(bytesFromBase64(b64));
         }
 
-        function utf8ToBase64(text) {
-            return base64FromBytes(new TextEncoder().encode(text));
-        }
-
         // Lit un fichier du dépôt sur main : { status, text, sha }
-        async function fetchRepoFile(path, token) {
-            const response = await fetch(`${API_ROOT}/contents/${path}?ref=main`, { headers: apiHeaders(token), cache: 'no-store' });
+        async function fetchRepoFile(path) {
+            const response = await fetch(`${API_ROOT}/contents/${path}?ref=main`, { headers: apiHeaders(), cache: 'no-store' });
             if (!response.ok) {
                 return { status: response.status };
             }
@@ -2198,7 +2053,7 @@
                 text = base64ToUtf8(file.content);
             } else {
                 // Au-delà de 1 Mo, l'API ne renvoie pas le contenu : lecture du blob brut
-                const blob = await fetch(file.git_url, { headers: apiHeaders(token, 'application/vnd.github.raw'), cache: 'no-store' });
+                const blob = await fetch(file.git_url, { headers: apiHeaders('application/vnd.github.raw'), cache: 'no-store' });
                 if (!blob.ok) {
                     return { status: blob.status };
                 }
@@ -2207,77 +2062,19 @@
             return { status: 200, text, sha: file.sha };
         }
 
-        // Réécrit un fichier à partir de sa version à jour : `transform(texte)` renvoie le nouveau texte.
-        // Si le fichier a changé entre la lecture et l'écriture (sha périmé), on relit et on réessaie.
-        async function updateRepoFile(path, transform, token, message) {
-            try {
-                for (let attempt = 1; attempt <= UPDATE_ATTEMPTS; attempt++) {
-                    const current = await fetchRepoFile(path, token);
-                    if (current.status !== 200) {
-                        return { success: false, status: current.status, error: apiErrorMessage(current.status, 'lire les fichiers') };
-                    }
-                    const text = await transform(current.text);
-                    const response = await fetch(`${API_ROOT}/contents/${path}`, {
-                        method: 'PUT',
-                        headers: { ...apiHeaders(token), 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message, content: utf8ToBase64(text), sha: current.sha, branch: 'main' })
-                    });
-                    if (response.ok) {
-                        return { success: true, text };
-                    }
-                    if ((response.status === 409 || response.status === 422) && attempt < UPDATE_ATTEMPTS) {
-                        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-                        continue;
-                    }
-                    return { success: false, status: response.status, error: apiErrorMessage(response.status, 'modifier les fichiers') };
-                }
-            } catch (error) {
-                return { success: false, error: error.message };
-            }
-        }
-
-        // data.json est relu, modifié puis rechiffré avec le code de la session
-        async function updateDataJsonOnGitHub(modify, token, message) {
-            return updateRepoFile('docs/data.json', async text => {
-                const stored = JSON.parse(text);
-                const data = isEncrypted(stored) ? await decryptEnvelope(stored, sessionPassword) : stored;
-                modify(data);
-                return JSON.stringify(await encryptData(data, sessionPassword), null, 2) + '\n';
-            }, token, `🗑️ ${message}`);
-        }
-
-        // ===== SUPPRESSION DES DÉTECTIONS =====
-        async function resetDetection(detectionId, country) {
-            if (!confirm(`Supprimer cette alerte pour ${country} ?`)) {
-                return;
-            }
-            const token = getToken();
-            if (!token) return;
-            // La suppression s'applique à la version à jour du fichier sur GitHub,
-            // pas à la copie servie par Pages (qui peut dater d'avant le dernier scan)
-            const result = await updateDataJsonOnGitHub(
-                data => { data.tenders = (data.tenders || []).filter(t => t.id !== detectionId); },
-                token,
-                `Remove detection for ${country}`
-            );
-            if (result.success) {
-                alert('✅ Alerte supprimée pour tous les utilisateurs !');
-                await loadDataFromGitHub(token);
-            } else {
-                alert('❌ ' + result.error);
-            }
-        }
-
         // Version à jour sur main, sans attendre la republication de GitHub Pages
-        async function loadDataFromGitHub(token) {
-            const file = await fetchRepoFile('docs/data.json', token);
-            if (file.status !== 200) throw new Error(apiErrorMessage(file.status, 'lire les fichiers'));
+        async function loadDataFromGitHub() {
+            const file = await fetchRepoFile('docs/data.json');
+            if (file.status !== 200) throw new Error(apiErrorMessage(file.status));
             const stored = JSON.parse(file.text);
             applyData(isEncrypted(stored) ? await decryptEnvelope(stored, sessionPassword) : stored);
         }
 
         // ===== LANCEMENT ET SUIVI DE L'ANALYSE =====
-        const SCAN_POLL_MS = 10000;
+        // Sans token, GitHub limite à 60 consultations par heure : suivi toutes les 30 s
+        const SCAN_POLL_MS = 30000;
+        const SCAN_WAIT_POLL_MS = 15000;
+        const SCAN_WAIT_MAX_MS = 5 * 60 * 1000;
         // Étapes affichées, repérées par le premier pas du workflow qui les compose
         const SCAN_STAGES = [
             { key: 'queue', label: 'En attente d’un serveur GitHub' },
@@ -2363,67 +2160,71 @@
             return states;
         }
 
-        async function listScanRuns(token) {
+        async function listScanRuns() {
             const response = await fetch(`${API_ROOT}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=10`,
-                { headers: apiHeaders(token), cache: 'no-store' });
-            if (!response.ok) throw new Error(apiErrorMessage(response.status, 'consulter les analyses'));
+                { headers: apiHeaders(), cache: 'no-store' });
+            if (!response.ok) throw new Error(apiErrorMessage(response.status));
             return (await response.json()).workflow_runs || [];
         }
 
+        // Ouvre la page du workflow sur GitHub (bouton « Run workflow »), puis suit la nouvelle analyse ici
         async function launchScan() {
-            const token = getToken();
-            if (!token) return;
-            setScanButton(true, 'Envoi de la demande…');
+            // Sans « noopener » dans les options : avec, window.open renvoie toujours null
+            const page = window.open(WORKFLOW_PAGE_URL, '_blank');
+            if (page) page.opener = null;
+            if (scanTracking) return;
+            const tracking = { waiting: true };
+            scanTracking = tracking;
+            setScanButton(true, 'En attente de GitHub…');
             renderScanSteps(null);
-            setScanText('Envoi de la demande à GitHub…');
+            setScanText('Sur la page GitHub qui vient de s’ouvrir : « Run workflow », puis le bouton vert « Run workflow ».',
+                (page === null ? `<a href="${WORKFLOW_PAGE_URL}" target="_blank" rel="noopener noreferrer">Ouvrir la page GitHub</a> · ` : '')
+                + 'Le suivi démarre ici automatiquement.');
             try {
-                const runs = await listScanRuns(token);
+                const runs = await listScanRuns();
                 const active = runs.find(run => run.status !== 'completed');
                 if (active) {
                     // Une analyse tourne déjà (programmée ou lancée ailleurs) : on la suit
-                    trackRun(active.id, token);
+                    trackRun(active.id);
                     return;
                 }
-                const latestId = runs.length ? runs[0].id : 0;
-                const response = await fetch(`${API_ROOT}/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
-                    method: 'POST',
-                    headers: { ...apiHeaders(token), 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ref: 'main' })
-                });
-                if (!response.ok) throw new Error(apiErrorMessage(response.status, 'lancer une analyse'));
-                await waitForNewRun(latestId, token);
+                await waitForNewRun(runs.length ? runs[0].id : 0, tracking);
             } catch (error) {
+                if (scanTracking !== tracking) return;
                 scanTracking = null;
                 setScanButton(false);
-                setScanText("L'analyse n'a pas pu être lancée.", escapeHtml(error.message));
+                setScanText('Suivi de l’analyse indisponible.', escapeHtml(error.message));
             }
         }
 
-        // GitHub met quelques secondes à créer le run demandé
-        async function waitForNewRun(latestId, token) {
-            const deadline = Date.now() + 60000;
+        // Attend que l'analyse demandée sur GitHub apparaisse
+        async function waitForNewRun(latestId, tracking) {
+            const deadline = Date.now() + SCAN_WAIT_MAX_MS;
             while (Date.now() < deadline) {
-                await new Promise(resolve => setTimeout(resolve, 3000));
-                const created = (await listScanRuns(token)).find(run => run.id > latestId);
+                await new Promise(resolve => setTimeout(resolve, SCAN_WAIT_POLL_MS));
+                if (scanTracking !== tracking) return;
+                const created = (await listScanRuns()).find(run => run.id > latestId);
                 if (created) {
-                    trackRun(created.id, token);
+                    trackRun(created.id);
                     return;
                 }
             }
-            throw new Error("GitHub n'a pas encore démarré l'analyse. Elle apparaîtra dans l'onglet Actions du dépôt.");
+            scanTracking = null;
+            setScanButton(false);
+            renderScanIdle();
         }
 
-        function trackRun(runId, token) {
+        function trackRun(runId) {
             const tracking = { runId };
             scanTracking = tracking;
             setScanButton(true);
             const poll = async () => {
                 if (scanTracking !== tracking) return;
                 try {
-                    const runResponse = await fetch(`${API_ROOT}/actions/runs/${runId}`, { headers: apiHeaders(token), cache: 'no-store' });
-                    if (!runResponse.ok) throw new Error(apiErrorMessage(runResponse.status, 'consulter les analyses'));
+                    const runResponse = await fetch(`${API_ROOT}/actions/runs/${runId}`, { headers: apiHeaders(), cache: 'no-store' });
+                    if (!runResponse.ok) throw new Error(apiErrorMessage(runResponse.status));
                     const run = await runResponse.json();
-                    const jobsResponse = await fetch(`${API_ROOT}/actions/runs/${runId}/jobs`, { headers: apiHeaders(token), cache: 'no-store' });
+                    const jobsResponse = await fetch(`${API_ROOT}/actions/runs/${runId}/jobs`, { headers: apiHeaders(), cache: 'no-store' });
                     const job = jobsResponse.ok ? ((await jobsResponse.json()).jobs || [])[0] : null;
                     const states = stageStates(run, job);
                     renderScanSteps(states);
@@ -2443,7 +2244,7 @@
                         return;
                     }
                     setScanText(`Analyse terminée en ${elapsed}. Chargement des résultats…`, logLink);
-                    await loadDataFromGitHub(token);
+                    await loadDataFromGitHub();
                     renderScanSteps(Object.fromEntries(SCAN_STAGES.map(stage => [stage.key, 'done'])));
                     scanTracking = null;
                     setScanButton(false);
@@ -2452,7 +2253,7 @@
                 } catch (error) {
                     if (scanTracking !== tracking) return;
                     // Erreur réseau passagère : on réessaie au prochain tour
-                    document.getElementById('scanDetail').textContent = `Suivi interrompu (${error.message}). Nouvel essai dans 10 s.`;
+                    document.getElementById('scanDetail').textContent = `Suivi interrompu (${error.message}). Nouvel essai dans 30 s.`;
                     setTimeout(poll, SCAN_POLL_MS);
                 }
             };
@@ -2461,73 +2262,28 @@
 
         // À la connexion, reprend le suivi d'une analyse déjà en cours
         async function resumeScanTracking() {
-            const token = savedToken();
-            if (!token) return;
             try {
-                const active = (await listScanRuns(token)).find(run => run.status !== 'completed');
-                if (active) trackRun(active.id, token);
+                const active = (await listScanRuns()).find(run => run.status !== 'completed');
+                if (active) trackRun(active.id);
             } catch (error) {
                 console.warn('Suivi des analyses indisponible :', error.message);
             }
         }
 
-        // ===== MOTS-CLÉS (scripts/keywords.json, rangés par langue) =====
+        // ===== MOTS-CLÉS (scripts/keywords.json, rangés par langue, modifiables sur GitHub) =====
         const KEYWORD_KINDS = {
-            strong: { title: 'Forts', label: 'mots-clés forts', hint: 'un seul suffit pour retenir une offre' },
-            weak: { title: 'Faibles', label: 'mots-clés faibles', hint: 'retenus seulement si l’offre porte aussi sur une prestation de service (consultant, étude…)' }
+            strong: { title: 'Forts' },
+            weak: { title: 'Faibles' }
         };
         const KEYWORD_LANGUAGES = { fr: 'Français', en: 'Anglais', es: 'Espagnol', pt: 'Portugais', ar: 'Arabe' };
-        const KEYWORD_MIN_CHARS = 2;
-        const KEYWORD_MAX_CHARS = 120;
-        // { strong: { fr: [...], ... }, weak: { ... } }
-        const keywordsState = { loaded: false, original: null, current: null };
-
-        // Même normalisation que le scraper : sans accents, minuscules, espaces unifiés
-        function normalizeKeyword(text) {
-            return String(text).replace(/[’‘]/g, "'").replace(/ /g, ' ')
-                .normalize('NFKD').toLowerCase().replace(/\p{Mn}/gu, '')
-                .split(/\s+/).filter(Boolean).join(' ');
-        }
-
-        function cloneKeywords(keywords) {
-            const copy = {};
-            for (const kind of Object.keys(KEYWORD_KINDS)) {
-                copy[kind] = {};
-                for (const lang of Object.keys(KEYWORD_LANGUAGES)) {
-                    copy[kind][lang] = [...((keywords[kind] || {})[lang] || [])];
-                }
-            }
-            return copy;
-        }
-
-        // [{ kind, lang, term }] pour tout le fichier
-        function flattenKeywords(keywords) {
-            const all = [];
-            for (const kind of Object.keys(KEYWORD_KINDS)) {
-                for (const lang of Object.keys(KEYWORD_LANGUAGES)) {
-                    (keywords[kind][lang] || []).forEach(term => all.push({ kind, lang, term }));
-                }
-            }
-            return all;
-        }
-
-        const keywordKey = entry => `${entry.kind}|${entry.lang}|${normalizeKeyword(entry.term)}`;
-
-        function setMessage(id, text, kind) {
-            const element = document.getElementById(id);
-            element.textContent = text || '';
-            element.className = 'form-message' + (kind ? ' ' + kind : '');
-        }
+        const keywordsState = { loaded: false, keywords: null };
 
         async function loadKeywords() {
             try {
-                const file = await fetchRepoFile('scripts/keywords.json', savedToken());
-                if (file.status !== 200) throw new Error(apiErrorMessage(file.status, 'lire les fichiers'));
-                const keywords = JSON.parse(file.text);
-                keywordsState.original = cloneKeywords(keywords);
-                keywordsState.current = cloneKeywords(keywords);
+                const file = await fetchRepoFile('scripts/keywords.json');
+                if (file.status !== 200) throw new Error(apiErrorMessage(file.status));
+                keywordsState.keywords = JSON.parse(file.text);
                 keywordsState.loaded = true;
-                setMessage('keywordsMessage', '');
                 renderKeywords();
             } catch (error) {
                 document.getElementById('keywordsList').innerHTML =
@@ -2535,47 +2291,17 @@
             }
         }
 
-        function keywordError(term) {
-            const value = term.trim();
-            if (value.length < KEYWORD_MIN_CHARS || value.length > KEYWORD_MAX_CHARS) {
-                return `Un mot-clé doit faire entre ${KEYWORD_MIN_CHARS} et ${KEYWORD_MAX_CHARS} caractères.`;
-            }
-            if (!/[\p{L}\p{N}]/u.test(value)) {
-                return 'Un mot-clé doit contenir au moins une lettre ou un chiffre.';
-            }
-            const norm = normalizeKeyword(value);
-            const existing = flattenKeywords(keywordsState.current).find(entry => normalizeKeyword(entry.term) === norm);
-            if (existing) {
-                return `« ${existing.term} » existe déjà (${KEYWORD_LANGUAGES[existing.lang]}, ${KEYWORD_KINDS[existing.kind].label}).`;
-            }
-            return null;
-        }
-
-        function keywordChanges() {
-            if (!keywordsState.loaded) return { added: 0, removed: 0 };
-            const before = new Set(flattenKeywords(keywordsState.original).map(keywordKey));
-            const after = new Set(flattenKeywords(keywordsState.current).map(keywordKey));
-            return {
-                added: [...after].filter(key => !before.has(key)).length,
-                removed: [...before].filter(key => !after.has(key)).length
-            };
-        }
-
         function renderKeywords() {
-            const container = document.getElementById('keywordsList');
-            const original = new Set(flattenKeywords(keywordsState.original).map(keywordKey));
-            container.innerHTML = Object.entries(KEYWORD_LANGUAGES).map(([lang, languageName]) => {
-                const total = Object.keys(KEYWORD_KINDS).reduce((n, kind) => n + keywordsState.current[kind][lang].length, 0);
+            const keywords = keywordsState.keywords;
+            document.getElementById('keywordsList').innerHTML = Object.entries(KEYWORD_LANGUAGES).map(([lang, languageName]) => {
+                const termsOf = kind => ((keywords[kind] || {})[lang] || []);
+                const total = Object.keys(KEYWORD_KINDS).reduce((n, kind) => n + termsOf(kind).length, 0);
                 const groups = Object.entries(KEYWORD_KINDS).map(([kind, info]) => {
-                    const terms = keywordsState.current[kind][lang];
-                    const chips = terms.map((term, index) => {
-                        const added = original.has(keywordKey({ kind, lang, term })) ? '' : ' added';
-                        return `<span class="kw-chip${added}">${escapeHtml(term)}`
-                            + `<button type="button" class="kw-remove" onclick="removeKeyword('${kind}', '${lang}', ${index})" aria-label="Retirer ${escapeHtml(term)}">×</button></span>`;
-                    }).join('');
+                    const terms = termsOf(kind);
+                    const chips = terms.map(term => `<span class="kw-chip">${escapeHtml(term)}</span>`).join('');
                     return `
                         <div class="kw-group">
-                            <div class="kw-group-title">${info.title} (${terms.length}) <span class="kw-group-hint">· ${info.hint}</span></div>
+                            <div class="kw-group-title">${info.title} (${terms.length})</div>
                             <div class="kw-chips">${chips || '<span class="section-note">Aucun</span>'}</div>
                         </div>`;
                 }).join('');
@@ -2583,98 +2309,8 @@
                     <div class="keywords-category" ${lang === 'ar' ? 'dir="auto"' : ''}>
                         <div class="keywords-category-title">${languageName} (${total})</div>
                         ${groups}
-                        <form class="kw-add" onsubmit="addKeyword(event, '${lang}')">
-                            <label class="visually-hidden" for="kw-input-${lang}">Nouveau mot-clé en ${languageName.toLowerCase()}</label>
-                            <input id="kw-input-${lang}" class="kw-input" type="text" maxlength="${KEYWORD_MAX_CHARS}" placeholder="Nouveau mot-clé" autocomplete="off">
-                            <label class="visually-hidden" for="kw-kind-${lang}">Type de mot-clé</label>
-                            <select id="kw-kind-${lang}" class="kw-select">
-                                <option value="strong">Fort</option>
-                                <option value="weak">Faible</option>
-                            </select>
-                            <button type="submit" class="secondary-button">Ajouter</button>
-                        </form>
                     </div>`;
             }).join('');
-            const { added, removed } = keywordChanges();
-            const dirty = added + removed > 0;
-            document.getElementById('keywordsPending').textContent = dirty
-                ? `${added} ajout(s), ${removed} retrait(s) non enregistré(s)` : '';
-            document.getElementById('keywordsSave').disabled = !dirty;
-            document.getElementById('keywordsCancel').disabled = !dirty;
-        }
-
-        function addKeyword(event, lang) {
-            event.preventDefault();
-            const input = document.getElementById(`kw-input-${lang}`);
-            const kind = document.getElementById(`kw-kind-${lang}`).value;
-            const error = keywordError(input.value);
-            if (error) {
-                setMessage('keywordsMessage', error, 'error');
-                input.focus();
-                return;
-            }
-            keywordsState.current[kind][lang].push(input.value.trim());
-            setMessage('keywordsMessage', '');
-            renderKeywords();
-            document.getElementById(`kw-kind-${lang}`).value = kind;
-            document.getElementById(`kw-input-${lang}`).focus();
-        }
-
-        function removeKeyword(kind, lang, index) {
-            const strongCount = Object.values(keywordsState.current.strong).reduce((n, terms) => n + terms.length, 0);
-            if (kind === 'strong' && strongCount === 1) {
-                setMessage('keywordsMessage', 'Il faut garder au moins un mot-clé fort.', 'error');
-                return;
-            }
-            keywordsState.current[kind][lang].splice(index, 1);
-            setMessage('keywordsMessage', '');
-            renderKeywords();
-        }
-
-        function cancelKeywordChanges() {
-            keywordsState.current = cloneKeywords(keywordsState.original);
-            setMessage('keywordsMessage', '');
-            renderKeywords();
-        }
-
-        async function saveKeywords() {
-            const token = getToken();
-            if (!token) return;
-            document.getElementById('keywordsSave').disabled = true;
-            setMessage('keywordsMessage', 'Enregistrement…');
-            // Les ajouts et retraits sont appliqués à la version à jour du fichier
-            const before = new Set(flattenKeywords(keywordsState.original).map(keywordKey));
-            const after = new Set(flattenKeywords(keywordsState.current).map(keywordKey));
-            const removed = new Set([...before].filter(key => !after.has(key)));
-            const added = flattenKeywords(keywordsState.current).filter(entry => !before.has(keywordKey(entry)));
-            const result = await updateRepoFile('scripts/keywords.json', text => {
-                const fresh = cloneKeywords(JSON.parse(text));
-                for (const kind of Object.keys(KEYWORD_KINDS)) {
-                    for (const lang of Object.keys(KEYWORD_LANGUAGES)) {
-                        fresh[kind][lang] = fresh[kind][lang].filter(term => !removed.has(keywordKey({ kind, lang, term })));
-                    }
-                }
-                added.forEach(entry => {
-                    const norm = normalizeKeyword(entry.term);
-                    if (!flattenKeywords(fresh).some(other => normalizeKeyword(other.term) === norm)) {
-                        fresh[entry.kind][entry.lang].push(entry.term);
-                    }
-                });
-                if (!Object.values(fresh.strong).some(terms => terms.length)) {
-                    throw new Error('Il faut garder au moins un mot-clé fort.');
-                }
-                return JSON.stringify(fresh, null, 2) + '\n';
-            }, token, '🔑 Mots-clés modifiés depuis le dashboard');
-            if (!result.success) {
-                setMessage('keywordsMessage', result.error, 'error');
-                renderKeywords();
-                return;
-            }
-            const saved = JSON.parse(result.text);
-            keywordsState.original = cloneKeywords(saved);
-            keywordsState.current = cloneKeywords(saved);
-            renderKeywords();
-            setMessage('keywordsMessage', 'Mots-clés enregistrés. Ils seront utilisés à la prochaine analyse.', 'ok');
         }
 
         // ===== SOURCES (scripts/sources.json) =====
@@ -2713,12 +2349,7 @@
                 || null;
         }
 
-        function editLinkButton(url) {
-            return `<button type="button" class="link-edit" data-url="${escapeHtml(url)}" `
-                + `onclick="event.stopPropagation(); openSourceModal(this.dataset.url)" title="Modifier l'adresse de cette source">Modifier</button>`;
-        }
-
-        // Adresse modifiée depuis le dashboard, pas encore analysée
+        // Adresse modifiée sur GitHub, pas encore analysée
         function pendingLinkHtml(source) {
             const entry = configEntryFor(source);
             if (!entry || entry.url === source.url) return '';
@@ -2727,7 +2358,7 @@
 
         async function loadSourcesConfig() {
             try {
-                const file = await fetchRepoFile('scripts/sources.json', savedToken());
+                const file = await fetchRepoFile('scripts/sources.json');
                 if (file.status === 200) {
                     sourcesConfig = JSON.parse(file.text);
                     renderSourcesTab();
@@ -2761,7 +2392,6 @@
             document.getElementById('sourcesContent').innerHTML = list.map(source => {
                 const status = sourceStatus[source.url];
                 let stateHtml;
-                const action = `<button type="button" class="secondary-button" data-url="${escapeHtml(source.url)}" onclick="openSourceModal(this.dataset.url)">Modifier</button>`;
                 if (!scannedUrls.has(source.url)) {
                     stateHtml = '<span class="pill pending">Nouvelle adresse : prise en compte à la prochaine analyse</span>';
                 } else if (!status) {
@@ -2781,82 +2411,13 @@
                         <td>${escapeHtml(source.region || '')}</td>
                         <td class="url-cell"><a href="${safeUrl(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.url)}</a></td>
                         <td class="status-cell">${stateHtml}</td>
-                        <td>${action}</td>
                     </tr>`;
             }).join('');
         }
 
-        let editedSourceUrl = null;
-
-        async function openSourceModal(url) {
-            // Toujours partir de la liste à jour : l'adresse a pu changer depuis la dernière analyse
-            await loadSourcesConfig();
-            const scanned = sourcesData.find(s => s.url === url);
-            const source = (sourcesConfig || sourcesData).find(s => s.url === url)
-                || (scanned && configEntryFor(scanned));
-            if (!source) {
-                alert('Source introuvable dans la liste à jour. Rechargez la page.');
-                return;
-            }
-            editedSourceUrl = source.url;
-            document.getElementById('sourceModalName').textContent = source.country;
-            document.getElementById('sourceCurrentUrl').value = source.url;
-            document.getElementById('sourceNewUrl').value = '';
-            setMessage('sourceModalMessage', '');
-            document.getElementById('sourceModal').hidden = false;
-            document.getElementById('sourceNewUrl').focus();
-        }
-
-        function closeSourceModal() {
-            document.getElementById('sourceModal').hidden = true;
-            editedSourceUrl = null;
-        }
-
-        async function saveSourceEdit(event) {
-            event.preventDefault();
-            const oldUrl = editedSourceUrl;
-            const newUrl = document.getElementById('sourceNewUrl').value.trim();
-            if (safeUrl(newUrl) === '#') {
-                setMessage('sourceModalMessage', 'Adresse invalide : elle doit commencer par http:// ou https://.', 'error');
-                return;
-            }
-            if (newUrl === oldUrl) {
-                setMessage('sourceModalMessage', "C'est déjà l'adresse actuelle.", 'error');
-                return;
-            }
-            const token = getToken();
-            if (!token) return;
-            const button = document.getElementById('sourceModalSave');
-            button.disabled = true;
-            setMessage('sourceModalMessage', 'Enregistrement…');
-            const country = document.getElementById('sourceModalName').textContent;
-            const result = await updateRepoFile('scripts/sources.json', text => {
-                const list = JSON.parse(text);
-                const source = list.find(s => s.url === oldUrl);
-                if (!source) throw new Error('Cette source a été modifiée entre-temps. Rechargez la page.');
-                if (list.some(s => s.url === newUrl)) throw new Error('Cette adresse est déjà utilisée par une autre source.');
-                source.url = newUrl;
-                return JSON.stringify(list, null, 2) + '\n';
-            }, token, `🔗 Nouvelle adresse pour ${country} (dashboard)`);
-            button.disabled = false;
-            if (!result.success) {
-                setMessage('sourceModalMessage', result.error, 'error');
-                return;
-            }
-            sourcesConfig = JSON.parse(result.text);
-            closeSourceModal();
-            renderSourcesTab();
-            renderSourceLists();
-        }
-
-        document.addEventListener('keydown', event => {
-            if (event.key === 'Escape' && !document.getElementById('sourceModal').hidden) closeSourceModal();
-        });
-
-        window.addEventListener('beforeunload', event => {
-            const { added, removed } = keywordChanges();
-            if (added + removed > 0) event.preventDefault();
-        });
+        document.getElementById('scanLaunch').title = `Ouvre ${WORKFLOW_PAGE_URL} : cliquez ensuite sur « Run workflow »`;
+        document.getElementById('sourcesEditLink').href = editFileUrl('scripts/sources.json');
+        document.getElementById('keywordsEditLink').href = editFileUrl('scripts/keywords.json');
 
         const COUNTRY_CODES = {
             'Jersey': 'je', 'Cayman Islands': 'ky', 'Bermuda': 'bm', 'Liechtenstein': 'li', 'Panama': 'pa',
@@ -2932,10 +2493,10 @@
 
         function linkCellHtml(source, detection) {
             const isUnavailable = !source.url || source.url.includes('indisponible') || source.url.includes('unavailable');
-            if (isUnavailable) return '<span class="url-unavailable">URL indisponible</span>' + editLinkButton(source.url);
+            if (isUnavailable) return '<span class="url-unavailable">URL indisponible</span>' + pendingLinkHtml(source);
             const linkUrl = detection && detection.status !== '404' ? highlightUrl(source.url, detection) : source.url;
             return `<a href="${escapeHtml(safeUrl(source.url) === '#' ? '#' : linkUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.url)}</a>`
-                + editLinkButton(source.url) + pendingLinkHtml(source);
+                + pendingLinkHtml(source);
         }
 
         function keywordsHtml(keywords) {

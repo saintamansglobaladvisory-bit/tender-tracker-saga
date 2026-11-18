@@ -2,7 +2,7 @@
 
 Veille automatique des appels d'offres liés aux finances publiques (fiscalité, mobilisation des ressources, gestion des finances publiques, dette) sur 75 portails de marchés publics et de bailleurs.
 
-- **Scraper** (GitHub Actions) : analyse les portails chaque jour à 5 h 17 UTC, ou à la demande depuis le dashboard.
+- **Scraper** (GitHub Actions) : analyse les portails chaque jour à 5 h 17 UTC, ou à la demande (bouton « Lancer l'analyse » du dashboard, qui ouvre la page du workflow sur GitHub).
 - **Dashboard** (GitHub Pages) : affiche les offres détectées, l'état des sources et les mots-clés, protégé par un code d'accès.
 
 ## Fonctionnement
@@ -18,8 +18,8 @@ Aucune protection anti-robot n'est contournée : les sources bloquées apparaiss
 
 | Fichier | Rôle |
 |---|---|
-| `scripts/sources.json` | Liste des portails surveillés (modifiable depuis l'onglet Sources) |
-| `scripts/keywords.json` | Mots-clés forts et faibles, par langue (modifiables depuis l'onglet Mots-clés) |
+| `scripts/sources.json` | Liste des portails surveillés (à modifier sur GitHub, lien dans l'onglet Sources) |
+| `scripts/keywords.json` | Mots-clés forts et faibles, par langue (à modifier sur GitHub, lien dans l'onglet Mots-clés) |
 | `scripts/scraper.py` | Lecture des portails, détection, historique, état des sources, alertes |
 | `scripts/reconcile.py` | Fusion avec les suppressions faites depuis le dashboard pendant une analyse |
 | `docs/index.html` | Dashboard |
@@ -36,7 +36,7 @@ Aucune protection anti-robot n'est contournée : les sources bloquées apparaiss
    - `WEBHOOK_URL` (facultatif) : webhook Discord pour les alertes ;
    - `NOTIFICATION_ENABLED` (facultatif) : `true` pour recevoir les nouvelles offres.
 3. **Actions → Tender-Tracker SAGA - Scraper → Run workflow** pour la première analyse.
-4. Sur le dashboard, les actions qui modifient le dépôt demandent un token GitHub *fine-grained*, limité à ce dépôt, avec les permissions **Contents** et **Actions** en lecture et écriture.
+4. Le dashboard est en lecture seule et ne demande aucun token : lancer une analyse ou modifier les sources et les mots-clés se fait sur GitHub, connecté au compte du dépôt.
 
 Changer `DASHBOARD_PASSWORD` rend les données existantes illisibles : la prochaine analyse échoue. Pour changer de code, supprimer `docs/data.json` puis relancer une analyse (l'historique repart de zéro).
 
