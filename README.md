@@ -2,7 +2,7 @@
 
 Veille automatique des appels d'offres liés aux finances publiques (fiscalité, mobilisation des ressources, gestion des finances publiques, dette) sur 75 portails de marchés publics et de bailleurs.
 
-- **Scraper** (GitHub Actions) : analyse les portails chaque jour à 5 h 17 UTC, ou à la demande (bouton « Lancer l'analyse » du dashboard, qui ouvre la page du workflow sur GitHub).
+- **Scraper** (GitHub Actions) : analyse les portails chaque jour à 5 h 17 UTC, ou à la demande (bouton « Lancer l'analyse » du dashboard).
 - **Dashboard** (GitHub Pages) : affiche les offres détectées, l'état des sources et les mots-clés, protégé par un code d'accès.
 
 ## Fonctionnement
@@ -36,9 +36,15 @@ Aucune protection anti-robot n'est contournée : les sources bloquées apparaiss
    - `WEBHOOK_URL` (facultatif) : webhook Discord pour les alertes ;
    - `NOTIFICATION_ENABLED` (facultatif) : `true` pour recevoir les nouvelles offres.
 3. **Actions → Tender-Tracker SAGA - Scraper → Run workflow** pour la première analyse.
-4. Le dashboard est en lecture seule et ne demande aucun token : lancer une analyse ou modifier les sources et les mots-clés se fait sur GitHub, connecté au compte du dépôt.
+4. Le dashboard est en lecture seule et ne demande aucun token : modifier les sources et les mots-clés se fait sur GitHub, connecté au compte du dépôt.
+5. **Bouton « Lancer l'analyse »** (facultatif) : sans réglage, il ouvre la page du workflow sur GitHub (« Run workflow »). Pour qu'il lance l'analyse directement :
+   - créer un token « fine-grained » (**Settings → Developer settings → Fine-grained tokens**) limité à ce dépôt, avec la seule permission **Actions : Read and write** ;
+   - lancer `python scripts/set_launch_token.py` : il demande le token et le code d'accès sans les afficher, et écrit `docs/launch-token.json`, **chiffré** avec le code d'accès (le token n'apparaît jamais en clair dans le dépôt public) ;
+   - commiter et pousser `docs/launch-token.json`.
 
-Changer `DASHBOARD_PASSWORD` rend les données existantes illisibles : la prochaine analyse échoue. Pour changer de code, supprimer `docs/data.json` puis relancer une analyse (l'historique repart de zéro).
+   À refaire quand le token expire ou que le code d'accès change. Un token refusé ne bloque rien : le bouton revient à l'ouverture de la page GitHub.
+
+Changer `DASHBOARD_PASSWORD` rend les données existantes illisibles : la prochaine analyse échoue. Pour changer de code, supprimer `docs/data.json` puis relancer une analyse (l'historique repart de zéro), et relancer `scripts/set_launch_token.py`.
 
 ## Développement local
 

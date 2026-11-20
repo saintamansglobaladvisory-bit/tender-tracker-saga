@@ -1575,7 +1575,7 @@
 
             <!-- Lancement manuel de l'analyse (workflow GitHub) -->
             <div class="scan-panel" id="scanPanel">
-                <button type="button" class="scan-launch" id="scanLaunch" onclick="launchScan()" title="Ouvre GitHub : cliquez ensuite sur « Run workflow »">Lancer l'analyse</button>
+                <button type="button" class="scan-launch" id="scanLaunch" onclick="launchScan()" >Lancer l'analyse</button>
                 <div class="scan-progress">
                     <div class="scan-headline" id="scanHeadline">Dernière analyse : —</div>
                     <ol class="scan-steps" id="scanSteps" hidden></ol>
@@ -1942,7 +1942,7 @@
                 passwordInput.value = '';
                 showDashboard();
                 applyData(data);
-                resumeScanTracking();
+                loadLaunchToken().then(resumeScanTracking);
                 loadSourcesConfig();
             } catch (error) {
                 console.error('Erreur de connexion:', error);
@@ -2030,6 +2030,43 @@
             return { 'Accept': accept, 'X-GitHub-Api-Version': '2022-11-28' };
         }
 
+        // ===== TOKEN DE LANCEMENT (docs/launch-token.json, chiffré avec le code d'accès) =====
+        // Token « fine-grained » limité à ce dépôt et à la permission Actions : il lance et suit
+        // les analyses, rien d'autre. Absent ou illisible : le bouton ouvre la page GitHub du workflow.
+        let launchToken = null;
+
+        async function loadLaunchToken() {
+            launchToken = null;
+            try {
+                const response = await fetch(`launch-token.json?_=${Date.now()}`, { cache: 'no-store' });
+                if (response.ok) {
+                    launchToken = (await decryptEnvelope(await response.json(), sessionPassword)).token || null;
+                }
+            } catch (error) {
+                console.warn('Token de lancement illisible :', error.message);
+            }
+            document.getElementById('scanLaunch').title = launchToken
+                ? 'Lance une nouvelle analyse des sources'
+                : `Ouvre ${WORKFLOW_PAGE_URL} : cliquez ensuite sur « Run workflow »`;
+        }
+
+        // Appels Actions : avec le token s'il y en a un (5 000 consultations par heure au lieu de 60)
+        function actionsHeaders() {
+            const headers = apiHeaders();
+            if (launchToken) headers['Authorization'] = `Bearer ${launchToken}`;
+            return headers;
+        }
+
+        async function actionsFetch(url, options = {}) {
+            const response = await fetch(url, { ...options, headers: actionsHeaders(), cache: 'no-store' });
+            if (response.status === 401 && launchToken) {
+                // Token expiré ou révoqué : on continue sans
+                launchToken = null;
+                return fetch(url, { ...options, headers: actionsHeaders(), cache: 'no-store' });
+            }
+            return response;
+        }
+
         function apiErrorMessage(status) {
             if (status === 403 || status === 429) {
                 return 'Limite de consultations GitHub atteinte pour cette heure. Réessayez plus tard.';
@@ -2071,7 +2108,7 @@
         }
 
         // ===== LANCEMENT ET SUIVI DE L'ANALYSE =====
-        // Sans token, GitHub limite à 60 consultations par heure : suivi toutes les 30 s
+        // Sans token de lancement, GitHub limite à 60 consultations par heure : suivi toutes les 30 s
         const SCAN_POLL_MS = 30000;
         const SCAN_WAIT_POLL_MS = 15000;
         const SCAN_WAIT_MAX_MS = 5 * 60 * 1000;
@@ -2161,25 +2198,19 @@
         }
 
         async function listScanRuns() {
-            const response = await fetch(`${API_ROOT}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=10`,
-                { headers: apiHeaders(), cache: 'no-store' });
+            const response = await actionsFetch(`${API_ROOT}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=10`);
             if (!response.ok) throw new Error(apiErrorMessage(response.status));
             return (await response.json()).workflow_runs || [];
         }
 
-        // Ouvre la page du workflow sur GitHub (bouton « Run workflow »), puis suit la nouvelle analyse ici
+        // Lance l'analyse avec le token de lancement, sinon ouvre la page du workflow sur GitHub
+        // (bouton « Run workflow ») ; dans les deux cas, la nouvelle analyse est suivie ici
         async function launchScan() {
-            // Sans « noopener » dans les options : avec, window.open renvoie toujours null
-            const page = window.open(WORKFLOW_PAGE_URL, '_blank');
-            if (page) page.opener = null;
             if (scanTracking) return;
             const tracking = { waiting: true };
             scanTracking = tracking;
-            setScanButton(true, 'En attente de GitHub…');
+            setScanButton(true, 'Lancement…');
             renderScanSteps(null);
-            setScanText('Sur la page GitHub qui vient de s’ouvrir : « Run workflow », puis le bouton vert « Run workflow ».',
-                (page === null ? `<a href="${WORKFLOW_PAGE_URL}" target="_blank" rel="noopener noreferrer">Ouvrir la page GitHub</a> · ` : '')
-                + 'Le suivi démarre ici automatiquement.');
             try {
                 const runs = await listScanRuns();
                 const active = runs.find(run => run.status !== 'completed');
@@ -2187,6 +2218,11 @@
                     // Une analyse tourne déjà (programmée ou lancée ailleurs) : on la suit
                     trackRun(active.id);
                     return;
+                }
+                if (launchToken && await dispatchScan()) {
+                    setScanText('Analyse demandée, en attente de GitHub…');
+                } else {
+                    openWorkflowPage();
                 }
                 await waitForNewRun(runs.length ? runs[0].id : 0, tracking);
             } catch (error) {
@@ -2197,11 +2233,34 @@
             }
         }
 
+        // Demande l'analyse à GitHub ; false si le token est refusé (expiré, révoqué, droits insuffisants)
+        async function dispatchScan() {
+            const response = await fetch(`${API_ROOT}/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
+                method: 'POST',
+                headers: { ...actionsHeaders(), 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ref: 'main' })
+            });
+            if (response.ok) return true;
+            console.warn(`Lancement refusé par GitHub (HTTP ${response.status}) : passage par la page du workflow`);
+            launchToken = null;
+            return false;
+        }
+
+        function openWorkflowPage() {
+            // Sans « noopener » dans les options : avec, window.open renvoie toujours null
+            const page = window.open(WORKFLOW_PAGE_URL, '_blank');
+            if (page) page.opener = null;
+            setScanButton(true, 'En attente de GitHub…');
+            setScanText('Sur la page GitHub : « Run workflow », puis le bouton vert « Run workflow ».',
+                `<a href="${WORKFLOW_PAGE_URL}" target="_blank" rel="noopener noreferrer">${page === null ? 'Ouvrir' : 'Rouvrir'} la page GitHub</a> · `
+                + 'Le suivi démarre ici automatiquement.');
+        }
+
         // Attend que l'analyse demandée sur GitHub apparaisse
         async function waitForNewRun(latestId, tracking) {
             const deadline = Date.now() + SCAN_WAIT_MAX_MS;
             while (Date.now() < deadline) {
-                await new Promise(resolve => setTimeout(resolve, SCAN_WAIT_POLL_MS));
+                await new Promise(resolve => setTimeout(resolve, launchToken ? 5000 : SCAN_WAIT_POLL_MS));
                 if (scanTracking !== tracking) return;
                 const created = (await listScanRuns()).find(run => run.id > latestId);
                 if (created) {
@@ -2221,10 +2280,10 @@
             const poll = async () => {
                 if (scanTracking !== tracking) return;
                 try {
-                    const runResponse = await fetch(`${API_ROOT}/actions/runs/${runId}`, { headers: apiHeaders(), cache: 'no-store' });
+                    const runResponse = await actionsFetch(`${API_ROOT}/actions/runs/${runId}`);
                     if (!runResponse.ok) throw new Error(apiErrorMessage(runResponse.status));
                     const run = await runResponse.json();
-                    const jobsResponse = await fetch(`${API_ROOT}/actions/runs/${runId}/jobs`, { headers: apiHeaders(), cache: 'no-store' });
+                    const jobsResponse = await actionsFetch(`${API_ROOT}/actions/runs/${runId}/jobs`);
                     const job = jobsResponse.ok ? ((await jobsResponse.json()).jobs || [])[0] : null;
                     const states = stageStates(run, job);
                     renderScanSteps(states);
@@ -2415,7 +2474,6 @@
             }).join('');
         }
 
-        document.getElementById('scanLaunch').title = `Ouvre ${WORKFLOW_PAGE_URL} : cliquez ensuite sur « Run workflow »`;
         document.getElementById('sourcesEditLink').href = editFileUrl('scripts/sources.json');
         document.getElementById('keywordsEditLink').href = editFileUrl('scripts/keywords.json');
 
