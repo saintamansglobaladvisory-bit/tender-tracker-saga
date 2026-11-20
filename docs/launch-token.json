@@ -1,0 +1,8 @@
+{
+  "format": "tt-enc-v1",
+  "kdf": "PBKDF2-SHA256",
+  "iterations": 600000,
+  "salt": "5qkG7kE8TmOyvd0Czx/qGg==",
+  "iv": "YeLKSY6v5s4PEQAt",
+  "ciphertext": "c1TlQeYcjDUAnMadjsT8RH4osEZzc9Hg5ePIu1jNKauOX9Lx3kbdVxtuEkYFU0jFokCIxzMlXAWMKoRMvXiVdAdHQ0C7YU0orgj7Py8BetBolB5cflO2x8EOQDcyCDSnwxDMh0KkAlpR1LxFL7pafcHY6bkERuwy7OQ="
+}
